@@ -10,6 +10,6 @@ createRecipeButton.addEventListener('click', () => {
 
 // 「闇ガチャを回す」ボタンがクリックされた時の処理
 gachaButton.addEventListener('click', () => {
-    alert('「闇ガチャを回す」が選択されました！');
+    window.location.href = 'gacha.html';
     // ここにガチャの処理を記述します
 });
