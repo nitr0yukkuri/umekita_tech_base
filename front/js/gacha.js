@@ -9,5 +9,7 @@ drawButton.addEventListener('click', () => {
     const randomIndex = Math.floor(Math.random() * items.length);
     const result = items[randomIndex];
 
-    alert(`結果は「${result}」でした！`);
+    // ★★★ 変更点：アラート表示からページ遷移に変更 ★★★
+    // alert(`結果は「${result}」でした！`);
+    window.location.href = 'amazing-cooking-screen.html';
 });
