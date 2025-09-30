@@ -1,33 +1,28 @@
-/* style.css */
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f4f4f4;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-}
-
-.container {
-    border: 4px solid black;
-    padding: 40px 40px 30px;
-    width: 450px;
-    background-color: white;
-    text-align: center;
-    border-radius: 15px;
-    min-height: 550px;
-}
+/* material-input.css */
 
 h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin-top: 40px;
+    margin-bottom: 30px;
     font-weight: bold;
-    font-size: 2em;
+    font-size: 2.2em;
+}
+.container {
+    width: 375px;
+    height: 720px;
+    background-color: #ffffff;
+    border: 6px solid black;
+    border-radius: 12px; /* 少し角を丸くする */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column; /* 要素を縦に並べる */
+    align-items: center; /* 横方向の中央揃え */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+
 #ingredient-list {
-    
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -38,10 +33,12 @@ h2 {
     display: flex;
     align-items: center;
     gap: 15px;
+    width: 100%;
 }
 
 .ingredient-input {
-    flex-grow: 1;
+
+    width: 80%;
     padding: 15px 25px;
     border: 2px solid #ccc;
     border-radius: 50px;
@@ -59,20 +56,18 @@ h2 {
     white-space: nowrap;
     font-size: 1em;
 }
-/* ★★★ ここから変更 ★★★ */
 
-/* ボタンを囲むグループのスタイル */
 .button-group {
     display: flex;
-    justify-content: space-between; /* 両端に寄せる */
+    justify-content: space-between;
     align-items: center;
     margin: 30px 0;
+    width: 100%;
 }
 
-/* 「+ 材料を追加」ボタンのスタイルを変更 */
 #add-ingredient {
     padding: 12px 18px;
-    background-color: #e0f2f1; /* 背景色: 薄い緑 */
+    background-color: #e0f2f1;
     border: 2px solid #b2dfdb;
     border-radius: 8px;
     color: #00796b;
@@ -85,7 +80,6 @@ h2 {
     background-color: #b2dfdb;
 }
 
-/* 「最後の材料を削除」ボタンのスタイルを変更 */
 #remove-ingredient {
     padding: 12px 18px;
     background-color: #ffeeee;
@@ -101,9 +95,6 @@ h2 {
     background-color: #ffcdd2;
 }
 
-/* ★★★ ここまで変更 ★★★ */
-
-
 .submit-btn {
     background-color: #d6b4fc;
     color: #8A2BE2;
@@ -113,14 +104,15 @@ h2 {
     padding: 20px 50px;
     font-size: 1.5em;
     cursor: pointer;
-    width: 100%;
+    width: 90%;
     -webkit-text-stroke: 4px white; 
     paint-order: stroke fill;
     transition: all 0.2s ease;
-    margin-top: 20px;
+    margin-top: auto; /* OKボタンを一番下に配置 */
+    margin-bottom: 40px;
 }
 
 .submit-btn:hover {
-    transform: translateY(--3px);
+    transform: translateY(-3px);
     background-color: #e1c6ff; 
 }
