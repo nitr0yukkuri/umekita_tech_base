@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Aqua Slot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./front/css/surotto.css">
+</head>
+<body>
+
+    <div class="slot-machine">
+        <div class="gogo-lamp">GOGO!</div>
+
+        <div class="reels">
+            <div class="reel" id="reel0">🔮</div>
+            <div class="reel" id="reel1">🔮</div>
+            <div class="reel" id="reel2">🔮</div>
+        </div>
+
+        <div class="controls">
+            <div class="stop-buttons">
+                <button class="stop-button" data-reel="0" disabled>調理時間</button>
+                <button class="stop-button" data-reel="1" disabled>切り方</button>
+                <button class="stop-button" data-reel="2" disabled>調味料</button>
+            </div>
+            <button id="start-button">SPIN</button>
+        </div>
+    </div>
+
+    <script src="./front/js/surotto.js"></script>
+</body>
+</html>

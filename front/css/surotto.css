@@ -1,0 +1,146 @@
+body {
+    /* 背景画像の設定 */
+    background-image: url('/img/haikei.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* スクロールしても背景を固定 */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Orbitron', sans-serif; /* 未来的なフォントを適用 */
+    color: #fff;
+}
+
+.slot-machine {
+    /* グラスモーフィズム（すりガラス）効果 */
+    background: rgba(10, 25, 47, 0.6); /* 半透明の濃い青 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    border: 2px solid rgba(0, 255, 255, 0.5); /* シアンの半透明ボーダー */
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4); /* 外側に淡い光を追加 */
+    width: 500px;
+}
+
+/* GOGO!ランプのスタイル */
+.gogo-lamp {
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    border: 3px solid rgba(255, 0, 255, 0.3); /* 消灯時は暗いマゼンタ */
+    border-radius: 50%;
+    margin: 0 auto 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: rgba(255, 0, 255, 0.4);
+    transition: all 0.2s ease-in-out;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
+}
+
+/* ランプが光った時のスタイル */
+.gogo-lamp.lit {
+    background-color: #ff00ff;
+    color: #fff;
+    border-color: #fff;
+    /* 複数の影を重ねて強いネオン効果を出す */
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 60px #ff00ff;
+    text-shadow: 0 0 10px #fff;
+}
+
+.reels {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.reel {
+    width: 150px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.7); /* リールは濃い半透明に */
+    border: 2px solid #00ffff; /* シアンの枠線 */
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5); /* 内側に光を追加 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff; /* 絵文字にも光の効果 */
+    border-radius: 10px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.stop-buttons {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* ボタン共通のスタイル */
+button {
+    background: transparent;
+    border: 2px solid #ff00ff;
+    color: #ff00ff;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+}
+
+button:hover:not(:disabled) {
+    background: #ff00ff;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #ff00ff;
+    text-shadow: none;
+}
+
+/* 個別ボタンのサイズ調整 */
+.stop-button {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#start-button {
+    width: 80%;
+    padding: 15px 40px;
+    font-size: 20px;
+    border-color: #00ffff; /* スタートボタンはシアンに */
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+#start-button:hover:not(:disabled) {
+    background: #00ffff;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #00ffff;
+}
+
+button:disabled {
+    border-color: #555;
+    color: #555;
+    text-shadow: none;
+    cursor: not-allowed;
+}
+
+/* 非表示にするためのクラス */
+.hidden {
+    visibility: hidden;
+}
