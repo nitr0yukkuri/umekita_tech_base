@@ -3,30 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Aqua Slot</title>
+    <title>クッキング・ルーレット</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./front/css/surotto.css">
 </head>
 <body>
 
-    <div class="slot-machine">
-        <div class="gogo-lamp">GOGO!</div>
-
-        <div class="reels">
-            <div class="reel" id="reel0">🔮</div>
-            <div class="reel" id="reel1">🔮</div>
-            <div class="reel" id="reel2">🔮</div>
+    <div id="style-roulette-screen">
+        <h2>まず調理法を決めよう！</h2>
+        <div class="style-reel-container">
+            <div class="reel-strip" id="style-reel-strip"></div>
         </div>
+        <button id="style-start-button">調理法ルーレット開始</button>
+    </div>
 
-        <div class="controls">
-            <div class="stop-buttons">
-                <button class="stop-button" data-reel="0" disabled>調理時間</button>
-                <button class="stop-button" data-reel="1" disabled>切り方</button>
-                <button class="stop-button" data-reel="2" disabled>調味料</button>
+    <div id="main-slot-screen" class="hidden">
+        <div class="slot-machine">
+           <h2><div id="selected-style-display"></div></h2> 
+            <div class="gogo-lamp">GOGO!</div>
+
+            <div class="reels">
+                <div class="reel" id="reel0"><div class="reel-strip"></div></div>
+                <div class="reel" id="reel1"><div class="reel-strip"></div></div>
+                <div class="reel" id="reel2"><div class="reel-strip"></div></div>
             </div>
-            <button id="start-button">SPIN</button>
+
+            <div id="result-display">
+               
+                <p id="result-text"></p>
+            </div>
+            
+            <div class="controls">
+                <div class="stop-buttons">
+                    <button class="stop-button" data-reel="0" disabled>調理時間</button>
+                    <button class="stop-button" data-reel="1" disabled>切り方</button>
+                    <button class="stop-button" data-reel="2" disabled>味付け</button>
+                </div>
+                <button id="start-button">ルーレット開始</button>
+            </div>
         </div>
     </div>
 
