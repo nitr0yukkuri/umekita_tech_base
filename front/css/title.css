@@ -28,14 +28,16 @@ body {
 
 /* タイトルのスタイル */
 .title {
+    color: #00ffff;
+    font-family: 'Orbitron', sans-serif;
     font-size: 2.8rem;
     font-weight: bold;
-    /* ★★★ ここから変更 ★★★ */
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
     margin-top: 200px;
     /* 上の余白を調整 */
     margin-bottom: 220px;
     /* 下の余白を調整 */
-    /* ★★★ ここまで変更 ★★★ */
 }
 
 /* ボタンの共通スタイル */
@@ -44,13 +46,16 @@ body {
     padding: 16px;
     margin-bottom: 20px;
     border-radius: 50px;
-    border: 2px solid rgba(0, 0, 0, 0.7);
     font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
     text-align: center;
-    transition: transform 0.1s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
 }
 
 /* クリックした時の簡単なアニメーション */
@@ -60,13 +65,24 @@ body {
 
 /* 1番目のボタン（紫） */
 #btn-1 {
-    background-color: #d8b4fe;
-    color: #1f2937;
+    border-color: #d8b4fe;
+    color: #d8b4fe;
+    text-shadow: 0 0 5px #d8b4fe;
+}
+#btn-1:hover:not(:disabled) {
+    background: #d8b4fe;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #d8b4fe;
 }
 
 /* 2番目のボタン（緑） */
 #btn-2 {
-    background-color: #a7f3d0;
-    color: #1f2937;
-    margin-bottom: 60px;
+    border-color: #a7f3d0;
+    color: #a7f3d0;
+    text-shadow: 0 0 5px #a7f3d0;
+}
+#btn-2:hover:not(:disabled) {
+    background: #a7f3d0;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #a7f3d0;
 }
