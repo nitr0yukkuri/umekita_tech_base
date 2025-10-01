@@ -1,93 +1,135 @@
-/* front/css/gacha-result.css */
+/* front/css/amazing-cooking-screnn.css */
 
-/* ページの基本設定 (他のCSSファイルから流用) */
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f2f5;
+/* Google Fontsからフォントを読み込み */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+/* common.cssを上書きする body と container のスタイルを削除 */
+
+/* 「レシピ獲得！」のタイトル */
+/* 「レシピ獲得！」のタイトル */
+.finish-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    color: #00ffff;
+    /* 色を水色に */
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+    /* 光彩効果 */
+    width: 100%;
+    /* 幅を100%に設定 */
+    text-align: center;
+    /* テキストを中央揃えに */
 }
 
-/* コンテナ (他のCSSファイルから流用) */
+/* 料理の画像 */
+/* 料理の画像 */
+.recipe-image {
+    width: 70%;
+    border-radius: 15px;
+    /* 角を丸く */
+    margin-bottom: 30px;
+    border: 2px solid rgba(0, 255, 255, 0.5);
+    /* 枠線を追加 */
+    margin-left: auto;
+    /* 左の余白を自動に */
+    margin-right: auto;
+    /* 右の余白を自動に */
+    display: block;
+    /* ブロック要素として扱う */
+}
+
+/* ボタンをまとめるコンテナ */
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    margin-top: auto;
+    padding-bottom: 40px;
+}
+
+/* ボタンの共通スタイル */
+.button {
+    width: 85%;
+    padding: 16px;
+    border-radius: 50px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+/* 味評価ボタン (アウトライン) */
+.rating-button {
+    background: transparent;
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+.rating-button .stars {
+    margin-left: 8px;
+}
+
+.rating-button:hover {
+
+    box-shadow: 0 0 15px #00ffff;
+}
+
+/* X共有ボタン (塗りつぶし) */
+.share-button {
+    background-color: #00ffff;
+    color: #0d1a2f;
+    /* 濃い青の文字 */
+    border: none;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.share-button:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+}
+
+/* タイトルへ戻るボタン (アウトライン) */
+.return-button {
+    background: transparent;
+    border: 2px solid #d8b4fe;
+    /* 紫色 */
+    color: #d8b4fe;
+    text-shadow: 0 0 5px rgba(216, 180, 254, 0.7);
+}
+
+.return-button:hover {
+    background: #d8b4fe;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #d8b4fe;
+}
+
+/* front/css/amazing-cooking-screnn.css */
+
+/* スマートフォン風のコンテナ */
 .container {
-    width: 375px;
+    width: 500px;
     height: 720px;
-    background-color: #ffffff;
-    border: 6px solid black;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    /* グラスモーフィズム（すりガラス）効果 */
+    background: rgba(10, 25, 47, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 255, 255, 0.5);
+    /* シアンの半透明ボーダー */
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
-}
-
-/* レシピ結果表示カード */
-.result-card {
-    width: 90%;
-    border: 3px solid #483d8b;
-    /* 濃い青紫色の枠線 */
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 60px;
-    text-align: center;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.result-card h2 {
-    margin-top: 0;
-    font-size: 1.5rem;
-}
-
-.result-card img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.result-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.8rem;
-}
-
-.star-rating {
-    font-size: 1.5rem;
-    color: #ffd700;
-    /* 星の色をゴールドに */
-}
-
-/* 共有ボタン */
-/* 共有ボタン */
-.share-button {
-    width: 80%;
-    padding: 16px;
-    border-radius: 50px;
-    border: none;
-    background-color: #8A2BE2;
-    /* 紫色に変更 */
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    /* transitionの対象をallに変更 */
-    margin-top: auto;
-    /* ボタンを一番下に配置 */
-    margin-bottom: 80px;
-    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
-    /* 紫色の影を追加 */
-}
-
-.share-button:hover {
-    background-color: #9370DB;
-    /* 少し明るい紫色に変更 */
-    transform: translateY(-3px);
-    /* 少し浮き上がる */
-    box-shadow: 0 6px 16px rgba(138, 43, 226, 0.4);
-    /* 影を少し強く */
 }

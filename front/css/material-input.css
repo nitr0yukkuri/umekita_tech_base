@@ -9,16 +9,20 @@ h2 {
     font-weight: bold;
     font-size: 2.2em;
 }
+
 .container {
     width: 375px;
     height: 720px;
     background-color: #ffffff;
     border: 6px solid black;
-    border-radius: 12px; /* 少し角を丸くする */
+    border-radius: 12px;
+    /* 少し角を丸くする */
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     display: flex;
-    flex-direction: column; /* 要素を縦に並べる */
-    align-items: center; /* 横方向の中央揃え */
+    flex-direction: column;
+    /* 要素を縦に並べる */
+    align-items: center;
+    /* 横方向の中央揃え */
     padding: 20px;
     box-sizing: border-box;
 }
@@ -56,7 +60,7 @@ h2 {
 }
 
 .ingredient-input::placeholder {
-  color: #d0f0c0;
+    color: #d0f0c0;
 }
 
 .category-btn {
@@ -90,6 +94,7 @@ h2 {
     font-family: 'Orbitron', sans-serif;
     text-shadow: 0 0 2px #62e6be;
 }
+
 #add-ingredient:hover {
     background: #62e6be;
     color: #0d1a2f;
@@ -109,6 +114,7 @@ h2 {
     font-family: 'Orbitron', sans-serif;
     text-shadow: 0 0 2px #f76775;
 }
+
 #remove-ingredient:hover {
     background: #f76775;
     color: #0d1a2f;
@@ -121,9 +127,10 @@ h2 {
     padding: 20px 50px;
     font-size: 1.5em;
     cursor: pointer;
-    width: 90%; 
+    width: 90%;
     paint-order: stroke fill;
-    margin-top: auto; /* OKボタンを一番下に配置 */
+    margin-top: auto;
+    /* OKボタンを一番下に配置 */
     margin-bottom: 40px;
     transition: all 0.3s ease;
     background: transparent;
