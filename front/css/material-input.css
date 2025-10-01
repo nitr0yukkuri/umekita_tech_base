@@ -1,6 +1,9 @@
 /* material-input.css */
 
 h2 {
+    color: #00ffff;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
     margin-top: 40px;
     margin-bottom: 30px;
     font-weight: bold;
@@ -37,14 +40,23 @@ h2 {
 }
 
 .ingredient-input {
-
     width: 80%;
     padding: 15px 25px;
-    border: 2px solid #ccc;
+    border: 2px solid #d0f0c0;
     border-radius: 50px;
     background-color: #d0f0c0;
     font-size: 1.2em;
     font-weight: bold;
+
+    background: transparent;
+    border: 2px solid #d0f0c0;
+    color: #d0f0c0;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 2px #d0f0c0;
+}
+
+.ingredient-input::placeholder {
+  color: #d0f0c0;
 }
 
 .category-btn {
@@ -67,52 +79,62 @@ h2 {
 
 #add-ingredient {
     padding: 12px 18px;
-    background-color: #e0f2f1;
-    border: 2px solid #b2dfdb;
     border-radius: 8px;
-    color: #00796b;
     font-size: 1.1em;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 2px solid #62e6be;
+    color: #62e6be;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 2px #62e6be;
 }
 #add-ingredient:hover {
-    background-color: #b2dfdb;
+    background: #62e6be;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #62e6be;
 }
 
 #remove-ingredient {
     padding: 12px 18px;
-    background-color: #ffeeee;
-    border: 2px solid #ffcdd2;
     border-radius: 8px;
-    color: #c62828;
     font-size: 1.1em;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 2px solid #f76775;
+    color: #f76775;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 2px #f76775;
 }
 #remove-ingredient:hover {
-    background-color: #ffcdd2;
+    background: #f76775;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #f76775;
 }
 
 .submit-btn {
-    background-color: #d6b4fc;
-    color: #8A2BE2;
     font-weight: 800;
-    border: 3px solid black;
     border-radius: 15px;
     padding: 20px 50px;
     font-size: 1.5em;
     cursor: pointer;
-    width: 90%;
-    -webkit-text-stroke: 4px white; 
+    width: 90%; 
     paint-order: stroke fill;
-    transition: all 0.2s ease;
     margin-top: auto; /* OKボタンを一番下に配置 */
     margin-bottom: 40px;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 2px solid #d6b4fc;
+    color: #d6b4fc;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 3px #d6b4fc;
 }
 
 .submit-btn:hover {
-    transform: translateY(-3px);
-    background-color: #e1c6ff; 
+    background: #d8b4fe;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #d8b4fe;
 }
