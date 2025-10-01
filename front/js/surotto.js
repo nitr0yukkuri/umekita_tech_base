@@ -1,9 +1,7 @@
 // --- HTML要素の取得 ---
-// 画面1：調理法ルーレット
 const styleRouletteScreen = document.getElementById('style-roulette-screen');
 const styleStartButton = document.getElementById('style-start-button');
 const styleReelStrip = document.getElementById('style-reel-strip');
-// 画面2：メインスロット
 const mainSlotScreen = document.getElementById('main-slot-screen');
 const startButton = document.getElementById('start-button');
 const stopButtons = document.querySelectorAll('#main-slot-screen .stop-button');
@@ -13,6 +11,14 @@ const gogoLamp = document.querySelector('.gogo-lamp');
 const resultDisplay = document.getElementById('result-display');
 const resultText = document.getElementById('result-text');
 const selectedStyleDisplay = document.getElementById('selected-style-display');
+
+// ★★★ 1. 効果音ファイルを読み込む ★★★
+const soundSpin = new Audio('ziyagura-reba.mp3');
+const soundStop = new Audio('弓矢が刺さる.mp3');
+const soundWin = new Audio('ziyagura-gako.mp3');
+
+// 回転音はループ再生するように設定
+//soundSpin.loop = true;
 
 // --- データ定義 ---
 const cookingStyles = ['焼く', '煮る', '鍋'];
@@ -74,7 +80,7 @@ styleStartButton.addEventListener('click', () => {
         setTimeout(() => {
             transitionToMainGame(selectedStyleId, selectedStyleName);
         }, 2500);
-    }, 500);
+    }, 600);
 });
 
 function transitionToMainGame(styleId, styleName) {
@@ -118,9 +124,13 @@ startButton.addEventListener('click', () => {
     gogoLamp.classList.remove('lit');
     startButton.disabled = true;
     stopButtons.forEach(button => button.disabled = true);
-    if (isLampLitThisTurn) {
-        gogoLamp.classList.add('lit');
-    }
+
+  
+
+    // ★★★ 3. ルーレット開始時に回転音を鳴らす ★★★
+    soundSpin.currentTime = 0;
+    soundSpin.play();
+
     startReelAnimation(0);
     startReelAnimation(1);
     stopButtons[0].disabled = false;
@@ -133,6 +143,19 @@ startButton.addEventListener('click', () => {
         reels[2].classList.add('hidden');
         stopButtons[2].classList.add('hidden');
     }
+    // ...
+    // まず回転音を鳴らす
+    soundSpin.currentTime = 0;
+    soundSpin.play();
+
+    if (isLampLitThisTurn) {
+        gogoLamp.classList.add('lit');
+        // 0.3秒後 (300ミリ秒後) に確定音を鳴らす
+        setTimeout(() => {
+            soundWin.play();
+        }, 500); 
+    }
+// ...
 });
 
 function startReelAnimation(index) {
@@ -160,6 +183,11 @@ stopButtons.forEach(button => {
     button.addEventListener('click', () => {
         const reelIndex = parseInt(button.dataset.reel);
         if (stoppedReels[reelIndex]) return;
+
+        // ★★★ 4. ストップボタンを押した時に停止音を鳴らす ★★★
+        soundStop.currentTime = 0;
+        soundStop.play();
+
         clearInterval(reelIntervals[reelIndex]);
         stoppedReels[reelIndex] = true;
         button.disabled = true;
@@ -177,7 +205,11 @@ stopButtons.forEach(button => {
         const allStopped = isLampLitThisTurn
             ? (stoppedReels[0] && stoppedReels[1] && stoppedReels[2])
             : (stoppedReels[0] && stoppedReels[1]);
+        
         if (allStopped) {
+            // ★★★ 5. 全てのリールが止まったら回転音を止める ★★★
+            soundSpin.pause();
+
             setTimeout(endGame, 2100);
         }
     });
@@ -191,9 +223,9 @@ function endGame() {
     let resultMessage = "";
     if (isLampLitThisTurn) {
         const finalResult2 = reels[2].dataset.finalSymbol;
-        resultMessage = `調理時間は「${finalResult0}」で切り方は「${finalResult1}」、味付けは「${finalResult2}」で決まり！`;
+        resultMessage = `「${finalResult0}」で「${finalResult1}」、味付けは「${finalResult2}」で決まり！`;
     } else {
-        resultMessage = `調理時間は「${finalResult0}」で切り方は「${finalResult1}」！`;
+        resultMessage = `「${finalResult0}」で「${finalResult1}」！`;
     }
     resultText.textContent = resultMessage;
     resultDisplay.classList.add('show');
