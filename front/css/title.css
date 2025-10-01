@@ -33,10 +33,17 @@ body {
     font-size: 2.8rem;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
-    margin-top: 200px;
+    margin-top: 50px;
     /* 上の余白を調整 */
-    margin-bottom: 220px;
+    margin-bottom: 70px;
     /* 下の余白を調整 */
+}
+
+.title img {
+  width: 350px; /* 画像の幅を指定 */
+  height: auto; /* 高さは自動調整して縦横比を維持 */
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  border: 0 0 25px rgba(0, 255, 255, 0.4);
 }
 
 /* ボタンの共通スタイル */
