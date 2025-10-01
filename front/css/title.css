@@ -43,7 +43,7 @@ body {
   width: 350px; /* 画像の幅を指定 */
   height: auto; /* 高さは自動調整して縦横比を維持 */
   border: 2px solid rgba(0, 255, 255, 0.5);
-  border: 0 0 25px rgba(0, 255, 255, 0.4);
+  border-radius: 75px;
 }
 
 /* ボタンの共通スタイル */
