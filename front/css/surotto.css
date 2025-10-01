@@ -42,7 +42,7 @@ body {
     overflow: hidden;
     margin: 20px auto;
     position: relative;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
 }
 
 #style-reel-strip {
@@ -266,4 +266,25 @@ button:disabled {
     color: #555;
     text-shadow: none;
     cursor: not-allowed;
+}
+
+/* (前略) */
+
+/* #start-button のスタイル定義に #result-button を追加 */
+#start-button,
+#result-button {
+    width: 80%;
+    padding: 15px 40px;
+    font-size: 20px;
+    border-color: #00ffff;
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+/* :hover のスタイル定義にも #result-button を追加 */
+#start-button:hover:not(:disabled),
+#result-button:hover:not(:disabled) {
+    background: #00ffff;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #00ffff;
 }

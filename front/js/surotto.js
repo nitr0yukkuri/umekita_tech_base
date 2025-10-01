@@ -13,9 +13,9 @@ const resultText = document.getElementById('result-text');
 const selectedStyleDisplay = document.getElementById('selected-style-display');
 
 // ★★★ 1. 効果音ファイルを読み込む ★★★
-const soundSpin = new Audio('ziyagura-reba.mp3');
-const soundStop = new Audio('弓矢が刺さる.mp3');
-const soundWin = new Audio('ziyagura-gako.mp3');
+const soundSpin = new Audio('../sound/ziyagura-reba.mp3');
+const soundStop = new Audio('../sound/bow-arrow-hit.mp3');
+const soundWin = new Audio('../sound/ziyagura-gako.mp3');
 
 // 回転音はループ再生するように設定
 //soundSpin.loop = true;
@@ -24,9 +24,9 @@ const soundWin = new Audio('ziyagura-gako.mp3');
 const cookingStyles = ['焼く', '煮る', '鍋'];
 const cookingStyleIds = ['yaku', 'niru', 'nabe'];
 const allReelData = {
-    yaku: [ ['5分', '10分', '弱火でじっくり', '強火で一気に', '12分', '7分'], ['薄切り', '厚切り', 'そのまま', '串に刺す', '一口大に'], ['塩コショウ', '焼肉のタレ', '醤油', 'ガーリック', 'ハーブソルト', 'ポン酢'] ],
-    niru: [ ['15分', '30分', '1時間', 'コトコト煮込む', '5分', '一晩寝かす'], ['乱切り', 'ぶつ切り', '輪切り', '大きめに', '隠し包丁'], ['醤油', 'みりん', '砂糖', '白だし', '味噌', 'コンソメ'] ],
-    nabe: [ ['煮えたらOK', '5分', '10分', 'くたくたになるまで', 'サッと煮る'], ['ざく切り', '薄切り', 'そのまま', '食べやすく', '白菜と交互に'], ['ポン酢', 'ごまだれ', 'めんつゆ', 'キムチの素', '豆乳だし'] ]
+    yaku: [['5分', '10分', '弱火でじっくり', '強火で一気に', '12分', '7分'], ['薄切り', '厚切り', 'そのまま', '串に刺す', '一口大に'], ['塩コショウ', '焼肉のタレ', '醤油', 'ガーリック', 'ハーブソルト', 'ポン酢']],
+    niru: [['15分', '30分', '1時間', 'コトコト煮込む', '5分', '一晩寝かす'], ['乱切り', 'ぶつ切り', '輪切り', '大きめに', '隠し包丁'], ['醤油', 'みりん', '砂糖', '白だし', '味噌', 'コンソメ']],
+    nabe: [['煮えたらOK', '5分', '10分', 'くたくたになるまで', 'サッと煮る'], ['ざく切り', '薄切り', 'そのまま', '食べやすく', '白菜と交互に'], ['ポン酢', 'ごまだれ', 'めんつゆ', 'キムチの素', '豆乳だし']]
 };
 let reelSymbols = [];
 
@@ -37,9 +37,9 @@ const REEL_REPEAT_COUNT = 10;
 
 // --- ゲーム状態変数 ---
 let isSpinning = false;
-let reelIntervals = []; 
-let stoppedReels = [false, false, false]; 
-let isLampLitThisTurn = false; 
+let reelIntervals = [];
+let stoppedReels = [false, false, false];
+let isLampLitThisTurn = false;
 
 // ===============================================
 // === 画面1: 調理法ルーレット関連の処理
@@ -62,7 +62,7 @@ function setupStyleReel() {
 styleStartButton.addEventListener('click', () => {
     styleStartButton.disabled = true;
     styleReelStrip.style.transition = 'transform 3s ease-in-out';
-    styleReelStrip.style.transform = `translateY(10000px)`; 
+    styleReelStrip.style.transform = `translateY(10000px)`;
 
     setTimeout(() => {
         const resultIndex = Math.floor(Math.random() * cookingStyles.length);
@@ -73,7 +73,7 @@ styleStartButton.addEventListener('click', () => {
         const symbolPosition = (targetLoop * cookingStyles.length + resultIndex) * STYLE_SYMBOL_HEIGHT;
         const centerOffset = (styleReelStrip.parentElement.offsetHeight - STYLE_SYMBOL_HEIGHT) / 2;
         const targetY = -(symbolPosition - centerOffset);
-        
+
         styleReelStrip.style.transition = 'transform 2.5s cubic-bezier(0.25, 1, 0.5, 1)';
         styleReelStrip.style.transform = `translateY(${targetY}px)`;
 
@@ -115,7 +115,7 @@ function setupMainReels() {
 }
 
 startButton.addEventListener('click', () => {
-    if (isSpinning) return; 
+    if (isSpinning) return;
     isSpinning = true;
     resultDisplay.classList.remove('show');
     reels[2].classList.remove('hidden');
@@ -125,7 +125,7 @@ startButton.addEventListener('click', () => {
     startButton.disabled = true;
     stopButtons.forEach(button => button.disabled = true);
 
-  
+
 
     // ★★★ 3. ルーレット開始時に回転音を鳴らす ★★★
     soundSpin.currentTime = 0;
@@ -139,7 +139,7 @@ startButton.addEventListener('click', () => {
         startReelAnimation(2);
         stopButtons[2].disabled = false;
     } else {
-        stoppedReels[2] = true; 
+        stoppedReels[2] = true;
         reels[2].classList.add('hidden');
         stopButtons[2].classList.add('hidden');
     }
@@ -153,9 +153,9 @@ startButton.addEventListener('click', () => {
         // 0.3秒後 (300ミリ秒後) に確定音を鳴らす
         setTimeout(() => {
             soundWin.play();
-        }, 500); 
+        }, 500);
     }
-// ...
+    // ...
 });
 
 function startReelAnimation(index) {
@@ -205,7 +205,7 @@ stopButtons.forEach(button => {
         const allStopped = isLampLitThisTurn
             ? (stoppedReels[0] && stoppedReels[1] && stoppedReels[2])
             : (stoppedReels[0] && stoppedReels[1]);
-        
+
         if (allStopped) {
             // ★★★ 5. 全てのリールが止まったら回転音を止める ★★★
             soundSpin.pause();
