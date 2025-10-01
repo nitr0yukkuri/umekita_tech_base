@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (currentCount >= 5) {
             // ★★★ 変更点：アラートを表示する行のコメントを解除 ★★★
-            alert('これ以上材料を追加できません！'); 
-            return; 
+            alert('これ以上材料を追加できません！');
+            return;
         }
 
         const newRow = document.createElement('div');
