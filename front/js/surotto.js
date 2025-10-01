@@ -1,109 +1,203 @@
-// HTMLの要素を取得
+// --- HTML要素の取得 ---
+// 画面1：調理法ルーレット
+const styleRouletteScreen = document.getElementById('style-roulette-screen');
+const styleStartButton = document.getElementById('style-start-button');
+const styleReelStrip = document.getElementById('style-reel-strip');
+// 画面2：メインスロット
+const mainSlotScreen = document.getElementById('main-slot-screen');
 const startButton = document.getElementById('start-button');
-const stopButtons = document.querySelectorAll('.stop-button');
-const reels = document.querySelectorAll('.reel');
+const stopButtons = document.querySelectorAll('#main-slot-screen .stop-button');
+const reels = document.querySelectorAll('#main-slot-screen .reel');
+const reelStrips = document.querySelectorAll('#main-slot-screen .reel-strip');
 const gogoLamp = document.querySelector('.gogo-lamp');
+const resultDisplay = document.getElementById('result-display');
+const resultText = document.getElementById('result-text');
+const selectedStyleDisplay = document.getElementById('selected-style-display');
 
-// ★★★変更点1: リールごとの絵柄リストを定義★★★
-const reelSymbols = [
-    // リール1 (左) - 7は1つだけ
-    ['10分', '3分', '5分', '15分', '30秒', '50分', '5分', '3分', '5分', '1分', '×'],
-    // リール2 (中) - 7は1つだけ
-    ['輪切り', '半月切り', '斜め切り', '短冊切り', '賽の目切り', 'みじん切り'],
-    // リール3 (右) - 7は1つだけ
-    ['塩5振り', '胡椒3振り', '酢1週', '醤油4週', '塩5振り', '胡椒3振り', '砂糖1杯', 'はちみつ1週', '塩5振り', '砂糖1杯', '白だし']
-];
+// --- データ定義 ---
+const cookingStyles = ['焼く', '煮る', '鍋'];
+const cookingStyleIds = ['yaku', 'niru', 'nabe'];
+const allReelData = {
+    yaku: [ ['5分', '10分', '弱火でじっくり', '強火で一気に', '12分', '7分'], ['薄切り', '厚切り', 'そのまま', '串に刺す', '一口大に'], ['塩コショウ', '焼肉のタレ', '醤油', 'ガーリック', 'ハーブソルト', 'ポン酢'] ],
+    niru: [ ['15分', '30分', '1時間', 'コトコト煮込む', '5分', '一晩寝かす'], ['乱切り', 'ぶつ切り', '輪切り', '大きめに', '隠し包丁'], ['醤油', 'みりん', '砂糖', '白だし', '味噌', 'コンソメ'] ],
+    nabe: [ ['煮えたらOK', '5分', '10分', 'くたくたになるまで', 'サッと煮る'], ['ざく切り', '薄切り', 'そのまま', '食べやすく', '白菜と交互に'], ['ポン酢', 'ごまだれ', 'めんつゆ', 'キムチの素', '豆乳だし'] ]
+};
+let reelSymbols = [];
 
-// ゲームの状態を管理する変数
+// --- 設定値 ---
+const SYMBOL_HEIGHT = 60;
+const STYLE_SYMBOL_HEIGHT = 100;
+const REEL_REPEAT_COUNT = 10;
+
+// --- ゲーム状態変数 ---
 let isSpinning = false;
 let reelIntervals = []; 
 let stoppedReels = [false, false, false]; 
 let isLampLitThisTurn = false; 
 
-// --- スタートボタンの処理 ---
+// ===============================================
+// === 画面1: 調理法ルーレット関連の処理
+// ===============================================
+
+function setupStyleReel() {
+    styleReelStrip.innerHTML = '';
+    for (let i = 0; i < 30; i++) {
+        cookingStyles.forEach(style => {
+            const symbolDiv = document.createElement('div');
+            symbolDiv.className = 'symbol';
+            symbolDiv.textContent = style;
+            styleReelStrip.appendChild(symbolDiv);
+        });
+    }
+    const oneLoopHeight = cookingStyles.length * STYLE_SYMBOL_HEIGHT;
+    styleReelStrip.style.transform = `translateY(-${oneLoopHeight * 10}px)`;
+}
+
+styleStartButton.addEventListener('click', () => {
+    styleStartButton.disabled = true;
+    styleReelStrip.style.transition = 'transform 3s ease-in-out';
+    styleReelStrip.style.transform = `translateY(10000px)`; 
+
+    setTimeout(() => {
+        const resultIndex = Math.floor(Math.random() * cookingStyles.length);
+        const selectedStyleId = cookingStyleIds[resultIndex];
+        const selectedStyleName = cookingStyles[resultIndex];
+
+        const targetLoop = 15;
+        const symbolPosition = (targetLoop * cookingStyles.length + resultIndex) * STYLE_SYMBOL_HEIGHT;
+        const centerOffset = (styleReelStrip.parentElement.offsetHeight - STYLE_SYMBOL_HEIGHT) / 2;
+        const targetY = -(symbolPosition - centerOffset);
+        
+        styleReelStrip.style.transition = 'transform 2.5s cubic-bezier(0.25, 1, 0.5, 1)';
+        styleReelStrip.style.transform = `translateY(${targetY}px)`;
+
+        setTimeout(() => {
+            transitionToMainGame(selectedStyleId, selectedStyleName);
+        }, 2500);
+    }, 500);
+});
+
+function transitionToMainGame(styleId, styleName) {
+    styleRouletteScreen.classList.add('hidden');
+    mainSlotScreen.classList.remove('hidden');
+    selectedStyleDisplay.textContent = `調理法: ${styleName}`;
+    reelSymbols = allReelData[styleId];
+    setupMainReels();
+}
+
+// ===============================================
+// === 画面2: メインルーレット関連の処理
+// ===============================================
+
+function setupMainReels() {
+    if (reelSymbols.length === 0) return;
+    reelStrips.forEach((strip, index) => {
+        const symbols = reelSymbols[index];
+        strip.innerHTML = '';
+        for (let i = 0; i < REEL_REPEAT_COUNT; i++) {
+            symbols.forEach(symbolText => {
+                const symbolDiv = document.createElement('div');
+                symbolDiv.className = 'symbol';
+                symbolDiv.textContent = symbolText;
+                strip.appendChild(symbolDiv);
+            });
+        }
+        const oneLoopHeight = symbols.length * SYMBOL_HEIGHT;
+        const initialOffset = -(oneLoopHeight * (REEL_REPEAT_COUNT - 3));
+        strip.style.transform = `translateY(${initialOffset}px)`;
+    });
+}
+
 startButton.addEventListener('click', () => {
     if (isSpinning) return; 
     isSpinning = true;
-
+    resultDisplay.classList.remove('show');
     reels[2].classList.remove('hidden');
     stopButtons[2].classList.remove('hidden');
-
     isLampLitThisTurn = Math.random() < 0.4;
-
     gogoLamp.classList.remove('lit');
     startButton.disabled = true;
     stopButtons.forEach(button => button.disabled = true);
-
     if (isLampLitThisTurn) {
         gogoLamp.classList.add('lit');
     }
-
-    startReel(0);
-    startReel(1);
+    startReelAnimation(0);
+    startReelAnimation(1);
     stopButtons[0].disabled = false;
     stopButtons[1].disabled = false;
-
     if (isLampLitThisTurn) {
-        startReel(2);
+        startReelAnimation(2);
         stopButtons[2].disabled = false;
     } else {
+        stoppedReels[2] = true; 
         reels[2].classList.add('hidden');
         stopButtons[2].classList.add('hidden');
-        stoppedReels[2] = true; 
     }
 });
 
-// リールを回転させるための補助関数
-function startReel(index) {
-    stoppedReels[index] = false; 
+function startReelAnimation(index) {
+    stoppedReels[index] = false;
+    const strip = reelStrips[index];
+    const oneLoopHeight = reelSymbols[index].length * SYMBOL_HEIGHT;
+    const resetPointY = -(oneLoopHeight * (REEL_REPEAT_COUNT - 2));
     reelIntervals[index] = setInterval(() => {
-        // ★★★変更点2: そのリール専用の絵柄リストを使う★★★
-        const currentSymbols = reelSymbols[index];
-        const randomIndex = Math.floor(Math.random() * currentSymbols.length);
-        reels[index].textContent = currentSymbols[randomIndex];
+        let currentY = parseFloat(strip.style.transform.replace('translateY(', ''));
+        strip.style.transition = 'none';
+        if (currentY > resetPointY) {
+            currentY -= oneLoopHeight;
+            strip.style.transform = `translateY(${currentY}px)`;
+        }
+        requestAnimationFrame(() => {
+            strip.style.transition = 'transform 0.1s linear';
+            currentY = parseFloat(strip.style.transform.replace('translateY(', ''));
+            const newY = currentY + 150;
+            strip.style.transform = `translateY(${newY}px)`;
+        });
     }, 100);
 }
 
-// --- ストップボタンの処理 ---
 stopButtons.forEach(button => {
     button.addEventListener('click', () => {
         const reelIndex = parseInt(button.dataset.reel);
-
         if (stoppedReels[reelIndex]) return;
-
-        // 回転アニメーションを停止
         clearInterval(reelIntervals[reelIndex]);
-
-        // ★★★変更点3: 最終的な停止絵柄を抽選して設定★★★
-        const finalSymbols = reelSymbols[reelIndex];
-        const finalIndex = Math.floor(Math.random() * finalSymbols.length);
-        reels[reelIndex].textContent = finalSymbols[finalIndex];
-
         stoppedReels[reelIndex] = true;
         button.disabled = true;
-        
+        const strip = reelStrips[reelIndex];
+        const symbols = reelSymbols[reelIndex];
+        const finalSymbolIndex = Math.floor(Math.random() * symbols.length);
+        reels[reelIndex].dataset.finalSymbol = symbols[finalSymbolIndex];
+        const targetLoop = Math.floor(REEL_REPEAT_COUNT / 2);
+        const symbolPositionInStrip = (targetLoop * symbols.length + finalSymbolIndex) * SYMBOL_HEIGHT;
+        const reelWindowHeight = reels[reelIndex].offsetHeight;
+        const centerOffset = (reelWindowHeight - SYMBOL_HEIGHT) / 2;
+        const targetY = -(symbolPositionInStrip - centerOffset);
+        strip.style.transition = 'transform 2s cubic-bezier(0.25, 1, 0.5, 1)';
+        strip.style.transform = `translateY(${targetY}px)`;
         const allStopped = isLampLitThisTurn
             ? (stoppedReels[0] && stoppedReels[1] && stoppedReels[2])
             : (stoppedReels[0] && stoppedReels[1]);
-        
         if (allStopped) {
-            endGame();
+            setTimeout(endGame, 2100);
         }
     });
 });
 
-// --- ゲーム終了時の処理 ---
 function endGame() {
     isSpinning = false;
     startButton.disabled = false;
-
+    const finalResult0 = reels[0].dataset.finalSymbol;
+    const finalResult1 = reels[1].dataset.finalSymbol;
+    let resultMessage = "";
     if (isLampLitThisTurn) {
-        const r0 = reels[0].textContent;
-        const r1 = reels[1].textContent;
-        const r2 = reels[2].textContent;
-
-        if (r0 === '7️⃣' && r1 === '7️⃣' && r2 === '7️⃣') {
-            console.log("BIG BONUS! 777揃い！");
-        }
+        const finalResult2 = reels[2].dataset.finalSymbol;
+        resultMessage = `調理時間は「${finalResult0}」で切り方は「${finalResult1}」、味付けは「${finalResult2}」で決まり！`;
+    } else {
+        resultMessage = `調理時間は「${finalResult0}」で切り方は「${finalResult1}」！`;
     }
+    resultText.textContent = resultMessage;
+    resultDisplay.classList.add('show');
 }
+
+// --- 初期化 ---
+setupStyleReel();
