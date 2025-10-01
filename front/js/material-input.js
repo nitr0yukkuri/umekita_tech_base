@@ -53,3 +53,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // ページ読み込み完了時に、最初の番号を整える
     updateIngredientNumbers();
 });
+// front/js/material-input.js
+
+// ...（既存のコードはそのまま）...
+
+// ▼▼▼ この部分を追記 ▼▼▼
+// OKボタン（submit-btn）の要素を取得
+const submitBtn = document.querySelector('.submit-btn');
+
+// OKボタンにクリックイベントリスナーを追加
+submitBtn.addEventListener('click', () => {
+    // 全ての材料入力欄の要素を取得
+    const allInputs = document.querySelectorAll('.ingredient-input');
+    const ingredients = [];
+
+    // 各入力欄の値を取得して配列に格納
+    allInputs.forEach(input => {
+        // 入力値が空でなければ追加
+        if (input.value.trim() !== '') {
+            ingredients.push(input.value.trim());
+        }
+    });
+
+    // 材料の配列をURLパラメータ用に変換
+    const params = new URLSearchParams({
+        ingredients: JSON.stringify(ingredients)
+    });
+
+    // 材料の情報をパラメータとして付けて、recipe-finish.htmlに遷移
+    window.location.href = `recipe-finish.html?${params.toString()}`;
+});

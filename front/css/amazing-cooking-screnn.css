@@ -62,22 +62,32 @@ body {
 }
 
 /* 共有ボタン */
+/* 共有ボタン */
 .share-button {
     width: 80%;
     padding: 16px;
     border-radius: 50px;
     border: none;
-    background-color: #2c2c2c;
+    background-color: #8A2BE2;
+    /* 紫色に変更 */
     color: white;
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease-in-out;
+    /* transitionの対象をallに変更 */
     margin-top: auto;
     /* ボタンを一番下に配置 */
     margin-bottom: 80px;
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+    /* 紫色の影を追加 */
 }
 
 .share-button:hover {
-    background-color: #444444;
+    background-color: #9370DB;
+    /* 少し明るい紫色に変更 */
+    transform: translateY(-3px);
+    /* 少し浮き上がる */
+    box-shadow: 0 6px 16px rgba(138, 43, 226, 0.4);
+    /* 影を少し強く */
 }
