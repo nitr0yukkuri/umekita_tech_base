@@ -81,5 +81,5 @@ submitBtn.addEventListener('click', () => {
     });
 
     // 材料の情報をパラメータとして付けて、recipe-finish.htmlに遷移
-    window.location.href = `recipe-finish.html?${params.toString()}`;
+    window.location.href = `surotto.html?${params.toString()}`;
 });

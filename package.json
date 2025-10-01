@@ -1,0 +1,25 @@
+{
+  "name": "umekita_tech_base",
+  "version": "1.0.0",
+  "description": "git clone https://github.com/nitr0yukkuri/umekita_tech_base\r → 現時点のGitHubにあるコードをローカルにコピーする",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitr0yukkuri/umekita_tech_base.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nitr0yukkuri/umekita_tech_base/issues"
+  },
+  "homepage": "https://github.com/nitr0yukkuri/umekita_tech_base#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
