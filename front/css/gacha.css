@@ -26,15 +26,18 @@ body {
 
 /* タイトルのスタイル */
 .title {
+    color: #00ffff;
+    font-family: 'Orbitron', sans-serif;
     font-size: 2.5rem;
     font-weight: bold;
-    margin-top: 60px;
-    margin-bottom: 40px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+    margin-top: 10px; /* 上の余白を60pxから減らしました */
+    margin-bottom: -25px;
 }
 
 /* ガチャマシンの画像コンテナ */
 .gacha-machine-container {
-    flex-grow: 1; /* 残りのスペースを全て使う */
+    /* flex-grow: 1; を削除して、画像とボタンが上に詰まるようにしました */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,8 +45,8 @@ body {
 }
 
 .gacha-machine-img {
-    max-width: 85%;   /* 画像の最大幅を親要素の95%に設定 */
-    max-height: 75%;  /* 画像の最大高さを85%に変更して大きくしました */
+    max-width: 85%;
+    max-height: 75%;
     width: auto;      /* 幅は自動調整 */
     height: auto;     /* 高さは自動調整 */
     object-fit: contain; /* 画像全体が表示されるように調整 */
@@ -51,22 +54,24 @@ body {
 
 /* ボタンのスタイル */
 .draw-button {
-    width: 80%;
-    padding: 16px;
-    margin-bottom: 80px;
-    border-radius: 50px;
-    border: none;
-    background-color: #2c2c2c;
-    color: white;
-    font-size: 1.2rem;
+    background: transparent;
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    font-family: 'Orbitron', sans-serif;
     font-weight: bold;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.1s ease, background-color 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    width: 80%;
+    padding: 15px 40px;
+    font-size: 20px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
 }
 
 .draw-button:hover {
-    background-color: #444444;
+    background: #00ffff;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #00ffff;
 }
 
 .draw-button:active {
