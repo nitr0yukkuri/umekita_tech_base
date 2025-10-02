@@ -5,7 +5,6 @@
 
 /* 全体の基本スタイル */
 body {
-    font-family: 'Noto Sans JP', sans-serif;
     background-color: #f4f4f8;
     display: flex;
     justify-content: center;
@@ -16,41 +15,40 @@ body {
 
 /* common.cssのスタイルを上書き */
 .container {
-
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 25px;
     box-sizing: border-box;
-    backdrop-filter: none;
     color: #333333;
 }
 
 /* 「レシピ完成！」のタイトル */
 .finish-title {
-    font-size: 2.2rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
     font-weight: 700;
     margin-top: 60px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     color: #00ffff;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+    width: 100%;
+    text-align: center;
 }
 
 /* 料理の画像 */
 .recipe-image {
-    width: 60%;
-    max-width: 300px;
-    height: auto;
+    width: 70%;
     border-radius: 15px;
-    object-fit: cover;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    border: 2px solid rgba(0, 255, 255, 0.5);
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 /* 味評価のボックス */
 .rating-box {
-    /* share-buttonと同じサイズに調整 */
     width: 85%;
     padding: 15px;
     font-size: 1.1rem;
@@ -64,10 +62,9 @@ body {
     text-align: center;
     transition: all 0.3s ease;
     margin-bottom: 20px;
-    /* ボタン間の余白を追加 */
+    /* ▼▼▼ 変更点: この1行を追加 ▼▼▼ */
+    box-sizing: border-box;
 }
-
-
 
 .rating-box .star {
     font-size: 1.3rem;
@@ -81,17 +78,15 @@ body {
     border-radius: 50px;
     border: none;
     background-color: #00ffff;
-    /* 背景色を水色に変更 */
     color: #0d1a2f;
-    /* 文字色を濃い青に変更 */
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    /* margin-top: auto; を削除して下のボタンとの間隔を修正 */
     margin-top: 5px;
     margin-bottom: 20px;
     box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+    box-sizing: border-box; /* 念のためこちらも指定 */
 }
 
 .share-button:hover {
@@ -103,31 +98,6 @@ body {
     transform: translateY(0);
 }
 
-/* ...（既存のCSSは省略）... */
-
-/* 共有ボタン */
-.share-button {
-    width: 85%;
-    padding: 18px;
-    border-radius: 50px;
-    border: none;
-    background-color: #00ffff;
-    /* 背景色を水色に変更 */
-    color: #0d1a2f;
-    /* 文字色を濃い青に変更 */
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    margin-top: 5px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
-}
-
-/* ▼▼▼ このスタイルを追記 ▼▼▼ */
-/* スタートへ戻るボタン */
-/* スタートへ戻るボタン */
-/* スタートへ戻るボタン */
 /* スタートへ戻るボタン */
 .return-button {
     width: 85%;
@@ -135,26 +105,20 @@ body {
     font-size: 1.1rem;
     font-weight: 700;
     color: #d8b4fe;
-    /* 紫色に変更 */
     text-shadow: 0 0 5px rgba(138, 43, 226, 0.7);
-    /* 紫色の影に変更 */
     background: transparent;
     border: 2px solid #d8b4fe;
-    /* 紫色の枠線に変更 */
     border-radius: 50px;
     cursor: pointer;
     text-align: center;
     transition: all 0.3s ease;
     margin-bottom: 60px;
-    /* 下の余白を調整 */
+    box-sizing: border-box; /* 念のためこちらも指定 */
 }
 
 .return-button:hover {
     background: #d8b4fe;
     color: #0d1a2f;
-    box-shadow: 0 0 15px #d8b4fe;
-    /* 文字色を白に変更 */
     box-shadow: 0 0 15px #8A2BE2;
-    /* 紫色の影に変更 */
     text-shadow: none;
 }

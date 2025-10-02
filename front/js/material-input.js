@@ -9,26 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeBtn = document.getElementById('remove-ingredient');
     const submitBtn = document.querySelector('.submit-btn');
 
-    // ▼▼▼ 変更点：全てのドロップダウンの選択肢を更新する関数を追加 ▼▼▼
     function updateAllDropdowns() {
         const allSelects = ingredientList.querySelectorAll('.ingredient-select');
         const selectedValues = [];
 
-        // 現在選択されている全ての値を取得
         allSelects.forEach(select => {
             if (select.value) {
                 selectedValues.push(select.value);
             }
         });
 
-        // 各ドロップダウンの選択肢を更新
         allSelects.forEach(select => {
             const currentSelectedValue = select.value;
             select.querySelectorAll('option').forEach(option => {
-                // 選択肢の値が「現在選択されている値のリスト」に含まれているかチェック
                 const isSelectedElsewhere = selectedValues.includes(option.value);
-
-                // もし他の場所で選択されていて、かつ、このドロップダウン自身の選択値でなければ無効化
                 if (isSelectedElsewhere && option.value !== currentSelectedValue) {
                     option.disabled = true;
                 } else {
@@ -44,8 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const select = document.createElement('select');
         select.className = 'ingredient-select';
-
-        // ▼▼▼ 変更点：ドロップダウンが変更された時に更新関数を呼ぶイベントリスナーを追加 ▼▼▼
         select.addEventListener('change', updateAllDropdowns);
 
         const defaultOption = document.createElement('option');
@@ -78,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return row;
     }
 
-    // 「+ 材料を追加」ボタンの機能
     addBtn.addEventListener('click', () => {
         const currentCount = ingredientList.querySelectorAll('.ingredient-row').length;
         if (currentCount >= 4) {
@@ -86,38 +77,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         ingredientList.appendChild(createIngredientRow());
-        // ▼▼▼ 変更点：行追加後にも更新関数を呼び、選択済みの項目を無効化 ▼▼▼
         updateAllDropdowns();
     });
 
-    // 「- 材料を削除」ボタンの機能
     removeBtn.addEventListener('click', () => {
         const allRows = ingredientList.querySelectorAll('.ingredient-row');
         if (allRows.length > 1) {
             allRows[allRows.length - 1].remove();
-            // ▼▼▼ 変更点：行削除後に更新関数を呼び、選択肢を有効化 ▼▼▼
             updateAllDropdowns();
         }
     });
 
     // OKボタンの機能
     submitBtn.addEventListener('click', () => {
-        const allSelects = document.querySelectorAll('.ingredient-select');
-        const ingredients = [];
+        const allRows = document.querySelectorAll('.ingredient-row');
+        const ingredientsData = [];
+        let allValid = true;
 
-        allSelects.forEach(select => {
-            if (select.value) {
-                ingredients.push(select.value);
+        allRows.forEach(row => {
+            const select = row.querySelector('.ingredient-select');
+            const quantityInput = row.querySelector('.quantity-input');
+
+            // 材料が選択されていて、かつグラム数が入力されているかチェック
+            if (select.value && quantityInput.value) {
+                ingredientsData.push({
+                    name: select.value,
+                    quantity: quantityInput.value
+                });
+            } else {
+                // どちらかが未入力であればフラグをfalseに
+                allValid = false;
             }
         });
 
-        if (ingredients.length === 0) {
-            alert('材料を1つ以上選択してください。');
+        // ▼▼▼ 変更点：すべての行で材料とグラム数が入力されているかチェック ▼▼▼
+        if (!allValid) {
+            alert('すべての材料と量を入力してください。');
             return;
         }
 
         const params = new URLSearchParams({
-            ingredients: JSON.stringify(ingredients)
+            // 材料名と量のセットを渡すように変更
+            ingredients: JSON.stringify(ingredientsData)
         });
         window.location.href = `surotto.html?${params.toString()}`;
     });

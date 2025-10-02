@@ -6,7 +6,6 @@
 /* common.cssを上書きする body と container のスタイルを削除 */
 
 /* 「レシピ獲得！」のタイトル */
-/* 「レシピ獲得！」のタイトル */
 .finish-title {
     font-family: 'Orbitron', sans-serif;
     font-size: 2.5rem;
@@ -80,10 +79,6 @@
     margin-left: 8px;
 }
 
-.rating-button:hover {
-
-    box-shadow: 0 0 15px #00ffff;
-}
 
 /* X共有ボタン (塗りつぶし) */
 .share-button {
