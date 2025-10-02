@@ -144,7 +144,7 @@ function onMainGameEnd() {
 
     let resultMessage = "";
     if (result.seasoning) {
-        resultMessage = `「${result.time}」で「${result.cutting}」\n味付けは「${result.seasoning}」で決まり！`;
+        resultMessage = `「${result.time}」で「${result.cutting}」、味付けは「${result.seasoning}」で決まり！`;
     } else {
         resultMessage = `「${result.time}」で「${result.cutting}」！`;
     }
