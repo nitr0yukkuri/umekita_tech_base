@@ -44,14 +44,11 @@ h2 {
 }
 
 .ingredient-input {
-    width: 80%;
+    flex-grow: 1; /* 幅の指定を変更し、自動で伸びるようにしました */
     padding: 15px 25px;
-    border: 2px solid #d0f0c0;
     border-radius: 50px;
-    background-color: #d0f0c0;
     font-size: 1.2em;
     font-weight: bold;
-
     background: transparent;
     border: 2px solid #d0f0c0;
     color: #d0f0c0;
@@ -63,14 +60,32 @@ h2 {
     color: #d0f0c0;
 }
 
-.category-btn {
-    padding: 12px 18px;
-    border: 2px solid #aaa;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 1em;
+/* 追加: 新しいグラム入力欄のスタイル */
+.quantity-input {
+    width: 70px; /* 幅を固定 */
+    padding: 15px 0;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 1.1em;
+    background: transparent;
+    border: 2px solid #d0f0c0; /* 枠線の色 */
+    color: #d0f0c0; /* 文字色 */
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 2px #d0f0c0;
+}
+
+.quantity-input::placeholder {
+    color: #d0f0c0;
+}
+
+/* スピナー（上下の矢印）を非表示にする場合 */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.quantity-input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .button-group {
