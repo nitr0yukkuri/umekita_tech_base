@@ -3,20 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>グルメイカー</title>
-    <link rel="stylesheet" href="./front/css/title.css">
-    <link rel="stylesheet" href="./front/css/common.css">
+    <title>クッキング・ルーレット</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./front/css/surotto.css">
 </head>
 <body>
-
-    <div class="container">
-        <h1 class="title"><img src="./img/gurumaker_icon.png" alt="グルメイカー アイコン"></h1>
-
-        <button id="btn-1" class="button">1, レシピを作る</button>
-        <button id="btn-2" class="button">2, 闇ガチャを回す</button>
+    <div id="start-screen" class="screen">
+        <h2>本日の材料</h2>
+        <ul id="ingredient-list"></ul>
+        <button id="cooking-start-button">調理を開始する</button>
     </div>
 
-    <script src="./front/js/title.js"></script>
+    <div id="style-roulette-screen" class="screen hidden">
+        <h2><span class="current-ingredient-name"></span> の調理法は？</h2>
+        <div class="style-reel-container">
+            <div class="reel-strip" id="style-reel-strip"></div>
+        </div>
+        <button id="style-start-button">調理法ルーレット開始</button>
+    </div>
 
+    <div id="main-slot-screen" class="screen hidden">
+        <div class="slot-machine">
+            <div id="selected-style-display">
+                <span class="current-ingredient-name"></span> | <span class="current-style-name"></span>
+            </div>
+            <div class="gogo-lamp">GOGO!</div>
+            <div class="reels">
+                <div class="reel" id="reel0"><div class="reel-strip"></div></div>
+                <div class="reel" id="reel1"><div class="reel-strip"></div></div>
+                <div class="reel" id="reel2"><div class="reel-strip"></div></div>
+            </div>
+            <div id="result-display">
+                <h3>本日の献立</h3>
+                <p id="result-text"></p>
+                <button id="next-button">次へ進む</button>
+            </div>
+            <div class="controls">
+                <div class="stop-buttons">
+                    <button class="stop-button" data-reel="0" disabled>調理時間</button>
+                    <button class="stop-button" data-reel="1" disabled>切り方</button>
+                    <button class="stop-button" data-reel="2" disabled>味付け</button>
+                </div>
+                <button id="start-button">ルーレット開始</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="summary-screen" class="screen hidden">
+        <h2>調理工程一覧</h2>
+        <div id="summary-list"></div>
+        <button id="restart-button">もう一度</button>
+    </div>
+
+    <script src="./front/js/surotto.js"></script>
 </body>
 </html>
