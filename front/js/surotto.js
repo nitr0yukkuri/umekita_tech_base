@@ -55,9 +55,9 @@ let currentIngredientIndex = 0;
 let allResults = [];
 let chosenCookingStyle = {};
 let isSpinning = false;
-let reelIntervals = []; 
-let stoppedReels = [false, false, false]; 
-let isLampLitThisTurn = false; 
+let reelIntervals = [];
+let stoppedReels = [false, false, false];
+let isLampLitThisTurn = false;
 
 // ==========================================================
 // === 2. ゲーム全体の流れを制御する関数
@@ -161,7 +161,13 @@ function onMainGameEnd() {
 // ==========================================================
 
 cookingStartButton.addEventListener('click', () => showScreen('style-roulette-screen'));
-restartButton.addEventListener('click', initializeApp);
+
+// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+// === ここを変更しました ===
+restartButton.addEventListener('click', () => {
+    window.location.href = 'recipe-finish.html';
+});
+// ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 styleStartButton.addEventListener('click', () => {
     styleStartButton.disabled = true;
@@ -175,7 +181,7 @@ styleStartButton.addEventListener('click', () => {
         const symbolPosition = (targetLoop * cookingStyles.length + resultIndex) * STYLE_SYMBOL_HEIGHT;
         const centerOffset = (styleReelStrip.parentElement.offsetHeight - STYLE_SYMBOL_HEIGHT) / 2;
         const targetY = -(symbolPosition - centerOffset);
-        
+
         styleReelStrip.style.transition = 'transform 2.5s cubic-bezier(0.25, 1, 0.5, 1)';
         styleReelStrip.style.transform = `translateY(${targetY}px)`;
 
@@ -198,7 +204,7 @@ function setupMainReels() {
 }
 
 startButton.addEventListener('click', () => {
-    if (isSpinning) return; 
+    if (isSpinning) return;
     isSpinning = true;
     stoppedReels = [false, false, false];
     resultDisplay.classList.remove('show');
@@ -217,7 +223,7 @@ startButton.addEventListener('click', () => {
     if (isLampLitThisTurn) {
         startReelAnimation(2); stopButtons[2].disabled = false;
     } else {
-        stoppedReels[2] = true; 
+        stoppedReels[2] = true;
         reels[2].classList.add('hidden'); stopButtons[2].classList.add('hidden');
     }
 });
