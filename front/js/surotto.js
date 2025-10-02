@@ -16,6 +16,7 @@ const restartButton = document.getElementById('restart-button');
 const styleStartButton = document.getElementById('style-start-button');
 const startButton = document.getElementById('start-button');
 const stopButtons = document.querySelectorAll('#main-slot-screen .stop-button');
+const nextButton = document.getElementById('next-button'); // ★追加
 
 // --- 表示要素 ---
 const ingredientList = document.getElementById('ingredient-list');
@@ -30,18 +31,16 @@ const resultDisplay = document.getElementById('result-display');
 const resultText = document.getElementById('result-text');
 const selectedStyleDisplay = document.getElementById('selected-style-display');
 
-// --- 効果音 ---
-const soundSpin = new Audio('../sound/ziyagura-reba.mp3');
+// (効果音、データ定義などは変更なし)
+const soundSpin = new Audio('../sound/ziyagura-reba.mp3'); /* ... */
 const soundStop = new Audio('../sound/bow-arrow-hit.mp3');
 const soundWin = new Audio('../sound/ziyagura-gako.mp3');
-
-// --- データ定義 ---
 const cookingStyles = ['焼く', '煮る', '鍋'];
 const cookingStyleIds = ['yaku', 'niru', 'nabe'];
 const allReelData = {
-    yaku: [ ['5分', '10分', '弱火でじっくり', '強火で一気に', '12分', '7分'], ['薄切り', '厚切り', 'そのまま', '串に刺す', '一口大に'], ['塩コショウ', '焼肉のタレ', '醤油', 'ガーリック', 'ハーブソルト', 'ポン酢'] ],
+    yaku: [ ['5分', '10分', '弱火でじっくり', '強火で一気に', '12分', '7分'], ['薄切り', '厚切り', 'そのまま', '串に刺す', '一口大に'], ['塩コショウ', '焼肉のタレ', '醤油', 'ガーリック', 'ハチミツ', 'ポン酢'] ],
     niru: [ ['15分', '30分', '1時間', 'コトコト煮込む', '5分', '一晩寝かす'], ['乱切り', 'ぶつ切り', '輪切り', '大きめに', '隠し包丁'], ['醤油', 'みりん', '砂糖', '白だし', '味噌', 'コンソメ'] ],
-    nabe: [ ['煮えたらOK', '5分', '10分', 'くたくたになるまで', 'サッと煮る'], ['ざく切り', '薄切り', 'そのまま', '食べやすく', 'サイコロ'], ['ポン酢', 'ごまだれ', 'めんつゆ', 'キムチの素', '豆乳だし'] ]
+    nabe: [ ['煮えたらOK', '5分', '10分', 'くたくたになるまで', 'サッと煮る'], ['ざく切り', '薄切り', 'そのまま', '食べやすく', 'サイコロ'], ['ポン酢', 'ごまだれ', 'めんつゆ', 'キムチの素', '白だし'] ]
 };
 let reelSymbols = [];
 
@@ -55,9 +54,9 @@ let currentIngredientIndex = 0;
 let allResults = [];
 let chosenCookingStyle = {};
 let isSpinning = false;
-let reelIntervals = [];
-let stoppedReels = [false, false, false];
-let isLampLitThisTurn = false;
+let reelIntervals = []; 
+let stoppedReels = [false, false, false]; 
+let isLampLitThisTurn = false; 
 
 // ==========================================================
 // === 2. ゲーム全体の流れを制御する関数
@@ -117,21 +116,12 @@ function showSummary() {
 // === 3. 各ルーレットと画面遷移のロジック
 // ==========================================================
 
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-// ★★★ 前回抜け落ちていた、最も重要な関数です ★★★
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 function setupStyleReel() {
     styleReelStrip.innerHTML = '';
-    for (let i = 0; i < 30; i++) {
-        cookingStyles.forEach(style => {
-            const el = document.createElement('div');
-            el.className = 'symbol';
-            el.textContent = style;
-            styleReelStrip.appendChild(el);
-        });
-    }
-    const oneLoopHeight = cookingStyles.length * STYLE_SYMBOL_HEIGHT;
-    const initialOffset = -(oneLoopHeight * 10);
+    for (let i = 0; i < 30; i++) { cookingStyles.forEach(style => {
+        const el = document.createElement('div'); el.className = 'symbol'; el.textContent = style; styleReelStrip.appendChild(el);
+    }); }
+    const initialOffset = -(cookingStyles.length * STYLE_SYMBOL_HEIGHT * 10);
     styleReelStrip.style.transform = `translateY(${initialOffset}px)`;
 }
 
@@ -151,9 +141,18 @@ function onMainGameEnd() {
         seasoning: isLampLitThisTurn ? reels[2].dataset.finalSymbol : null
     };
     allResults.push(result);
+
+    let resultMessage = "";
+    if (result.seasoning) {
+        resultMessage = `「${result.time}」で「${result.cutting}」\n味付けは「${result.seasoning}」で決まり！`;
+    } else {
+        resultMessage = `「${result.time}」で「${result.cutting}」！`;
+    }
+    resultText.textContent = resultMessage;
+    resultDisplay.classList.add('show');
+
     currentIngredientIndex++;
-    resultDisplay.classList.remove('show');
-    setTimeout(runMainRouletteForCurrentIngredient, 1500);
+    // 自動で次に進むsetTimeoutは削除
 }
 
 // ==========================================================
@@ -161,13 +160,12 @@ function onMainGameEnd() {
 // ==========================================================
 
 cookingStartButton.addEventListener('click', () => showScreen('style-roulette-screen'));
+restartButton.addEventListener('click', initializeApp);
 
-// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-// === ここを変更しました ===
-restartButton.addEventListener('click', () => {
-    window.location.href = 'recipe-finish.html';
+// ★★★「次へ」ボタンを押したら次の処理に進む★★★
+nextButton.addEventListener('click', () => {
+    runMainRouletteForCurrentIngredient();
 });
-// ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 styleStartButton.addEventListener('click', () => {
     styleStartButton.disabled = true;
@@ -181,7 +179,7 @@ styleStartButton.addEventListener('click', () => {
         const symbolPosition = (targetLoop * cookingStyles.length + resultIndex) * STYLE_SYMBOL_HEIGHT;
         const centerOffset = (styleReelStrip.parentElement.offsetHeight - STYLE_SYMBOL_HEIGHT) / 2;
         const targetY = -(symbolPosition - centerOffset);
-
+        
         styleReelStrip.style.transition = 'transform 2.5s cubic-bezier(0.25, 1, 0.5, 1)';
         styleReelStrip.style.transform = `translateY(${targetY}px)`;
 
@@ -204,7 +202,7 @@ function setupMainReels() {
 }
 
 startButton.addEventListener('click', () => {
-    if (isSpinning) return;
+    if (isSpinning) return; 
     isSpinning = true;
     stoppedReels = [false, false, false];
     resultDisplay.classList.remove('show');
@@ -223,7 +221,7 @@ startButton.addEventListener('click', () => {
     if (isLampLitThisTurn) {
         startReelAnimation(2); stopButtons[2].disabled = false;
     } else {
-        stoppedReels[2] = true;
+        stoppedReels[2] = true; 
         reels[2].classList.add('hidden'); stopButtons[2].classList.add('hidden');
     }
 });
