@@ -97,7 +97,6 @@ body {
     border: 2px solid rgba(0, 255, 255, 0.5);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
     width: 500px;
 }
 
@@ -246,30 +245,6 @@ button:hover:not(:disabled) {
     font-size: 16px;
 }
 
-#start-button {
-    width: 80%;
-    padding: 15px 40px;
-    font-size: 20px;
-    border-color: #00ffff;
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
-}
-
-#start-button:hover:not(:disabled) {
-    background: #00ffff;
-    color: #0d1a2f;
-    box-shadow: 0 0 15px #00ffff;
-}
-
-button:disabled {
-    border-color: #555;
-    color: #555;
-    text-shadow: none;
-    cursor: not-allowed;
-}
-
-/* (前略) */
-
 /* #start-button のスタイル定義に #result-button を追加 */
 #start-button,
 #result-button {
@@ -287,4 +262,11 @@ button:disabled {
     background: #00ffff;
     color: #0d1a2f;
     box-shadow: 0 0 15px #00ffff;
+}
+
+button:disabled {
+    border-color: #555;
+    color: #555;
+    text-shadow: none;
+    cursor: not-allowed;
 }

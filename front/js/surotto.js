@@ -1,3 +1,4 @@
+// front/js/surotto.js
 // --- HTML要素の取得 ---
 const styleRouletteScreen = document.getElementById('style-roulette-screen');
 const styleStartButton = document.getElementById('style-start-button');
@@ -11,6 +12,7 @@ const gogoLamp = document.querySelector('.gogo-lamp');
 const resultDisplay = document.getElementById('result-display');
 const resultText = document.getElementById('result-text');
 const selectedStyleDisplay = document.getElementById('selected-style-display');
+const resultButton = document.getElementById('result-button'); // ★ 結果を見るボタンを取得
 
 // ★★★ 1. 効果音ファイルを読み込む ★★★
 const soundSpin = new Audio('../sound/ziyagura-reba.mp3');
@@ -40,6 +42,8 @@ let isSpinning = false;
 let reelIntervals = [];
 let stoppedReels = [false, false, false];
 let isLampLitThisTurn = false;
+let selectedStyleName = ''; // ★ 選択された調理法名を保存
+let ingredients = []; // ★ 材料を保存
 
 // ===============================================
 // === 画面1: 調理法ルーレット関連の処理
@@ -67,7 +71,7 @@ styleStartButton.addEventListener('click', () => {
     setTimeout(() => {
         const resultIndex = Math.floor(Math.random() * cookingStyles.length);
         const selectedStyleId = cookingStyleIds[resultIndex];
-        const selectedStyleName = cookingStyles[resultIndex];
+        selectedStyleName = cookingStyles[resultIndex]; // ★ 選択された調理法名を保存
 
         const targetLoop = 15;
         const symbolPosition = (targetLoop * cookingStyles.length + resultIndex) * STYLE_SYMBOL_HEIGHT;
@@ -89,6 +93,18 @@ function transitionToMainGame(styleId, styleName) {
     selectedStyleDisplay.textContent = `調理法: ${styleName}`;
     reelSymbols = allReelData[styleId];
     setupMainReels();
+
+    // ★★★ URLから材料を取得する処理を追記 ★★★
+    const urlParams = new URLSearchParams(window.location.search);
+    const ingredientsJson = urlParams.get('ingredients');
+    if (ingredientsJson) {
+        try {
+            ingredients = JSON.parse(ingredientsJson);
+        } catch (e) {
+            console.error("Failed to parse ingredients from URL:", e);
+            ingredients = [];
+        }
+    }
 }
 
 // ===============================================
@@ -123,8 +139,13 @@ startButton.addEventListener('click', () => {
     isLampLitThisTurn = Math.random() < 0.4;
     gogoLamp.classList.remove('lit');
     startButton.disabled = true;
-    stopButtons.forEach(button => button.disabled = true);
+    startButton.classList.add('hidden'); // ★ ルーレット開始時に非表示
 
+    // ⭐ 修正点 1: ルーレット開始時、「結果を見る」ボタンを無効化（表示は維持）
+    resultButton.classList.remove('hidden'); // 表示を維持
+    resultButton.disabled = true; // 無効化
+
+    stopButtons.forEach(button => button.disabled = true);
 
 
     // ★★★ 3. ルーレット開始時に回転音を鳴らす ★★★
@@ -217,7 +238,12 @@ stopButtons.forEach(button => {
 
 function endGame() {
     isSpinning = false;
-    startButton.disabled = false;
+    // startButton.disabled = false; // ルーレット開始ボタンは非表示のまま
+
+    // ⭐ 修正点 2: 全てのリールが止まったら、「結果を見る」ボタンを有効化
+    resultButton.classList.remove('hidden'); // 表示されていることを確認
+    resultButton.disabled = false; // 有効化
+
     const finalResult0 = reels[0].dataset.finalSymbol;
     const finalResult1 = reels[1].dataset.finalSymbol;
     let resultMessage = "";
@@ -230,6 +256,66 @@ function endGame() {
     resultText.textContent = resultMessage;
     resultDisplay.classList.add('show');
 }
+
+// ★★★ 結果を見るボタン（OKボタン）のイベントリスナーを追記 (フロントエンド単体動作に最小限の修正) ★★★
+resultButton.addEventListener('click', async () => {
+    // 必要なデータが揃っているか確認
+    if (stoppedReels[0] && stoppedReels[1] && (stoppedReels[2] || !isLampLitThisTurn)) {
+        const time = reels[0].dataset.finalSymbol;
+        const method = reels[1].dataset.finalSymbol;
+        const seasoning = isLampLitThisTurn ? reels[2].dataset.finalSymbol : '指定なし'; // 味付けはGOGOランプ点灯時のみ
+
+        // 1. API呼び出しの代わりに、フェイクデータを作成
+        resultButton.disabled = true;
+        resultButton.textContent = 'データ準備中...'; // 表示を更新 (生成中...よりは短時間で終わるイメージ)
+
+        // ⭐ API呼び出し部分はまるごと削除し、フェイクデータを直接定義
+        const fakeRecipeText =
+            `# 🍚 簡単レシピ案
+
+## 料理名: ${selectedStyleName}風スピード料理
+
+### 必要な材料:
+- ${ingredients.join(', ')} (お客様の材料)
+- ${time}で${selectedStyleName}
+- ${seasoning}
+
+### 手順:
+1. 材料を${method}に切ります。
+2. ${selectedStyleName}の工程に入ります。
+3. ${time}を目安に加熱し、最後に${seasoning}で味を整えます。`;
+
+        // ⭐ フェイクの画像データ (ダミー)
+        const fakeBase64Image = '';
+
+        try {
+            // ⭐ 2. レシピ本文と画像をセッションストレージに保存
+            sessionStorage.setItem('finalRecipeText', fakeRecipeText);
+            sessionStorage.setItem('finalRecipeImage', fakeBase64Image);
+
+            // ⭐ 3. recipe-finish.htmlへ遷移
+            // recipe-finish.jsがURLパラメータから time, method, seasoning などを取得して利用するため、これらを渡す
+            const params = new URLSearchParams({
+                cookingStyle: selectedStyleName,
+                time: time,
+                method: method,
+                seasoning: seasoning,
+            });
+            window.location.href = `recipe-finish.html?${params.toString()}`;
+
+        } catch (error) {
+            // エラー処理（フェイクデータなので基本的にここには来ない）
+            console.error('データ保存エラー:', error);
+            alert('データの準備に失敗しました。');
+            resultButton.disabled = false;
+            resultButton.textContent = '結果を見る'; // ボタンを元に戻す
+        }
+    } else {
+        // 全て停止しているはずなので、これは予期せぬエラー
+        alert('エラー: レシピ生成に必要な情報が不足しています。');
+    }
+});
+
 
 // --- 初期化 ---
 setupStyleReel();
