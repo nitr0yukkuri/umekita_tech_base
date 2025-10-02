@@ -1,6 +1,8 @@
+// back/server.js
+
 const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-require('dotenv').config(); // .envファイルからAPIキーを読み込みます
+// const { GoogleGenerativeAI } = require('@google/generative-ai'); // ← 削除
+// require('dotenv').config(); // ← 削除
 
 const app = express();
 const port = 3000;
@@ -9,9 +11,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.static('.'));
 
-// Gemini APIのセットアップ
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+// Gemini APIのセットアップを削除
 
 // '/api/generate-recipe'というURLでフロントエンドからのリクエストを待つ
 app.post('/api/generate-recipe', async (req, res) => {
@@ -22,28 +22,19 @@ app.post('/api/generate-recipe', async (req, res) => {
             return res.status(400).json({ error: '材料が指定されていません' });
         }
 
-        const prompt = `あなたは天才料理人です。以下の条件と材料だけで作れる、最高のレシピを考えてください。料理名は必ず独創的で面白い名前にしてください。
+        // ▼▼▼ Gemini APIの呼び出しを、固定のレシピ生成ロジックに変更 ▼▼▼
+        const recipe = {
+            recipeName: `「${ingredients.join('と')}」の${cookingStyle}風 ${seasoning}仕立て`,
+            description: `約${time}で完成！${method}の食感が楽しい、珠玉の一品。`,
+            steps: [
+                `材料（${ingredients.join('、')}など）をすべて${method}にする。`,
+                `フライパンや鍋を使い、調理法「${cookingStyle}」で${time}じっくり火を通す。`,
+                `最後に${seasoning}を加えて味を整え、お皿に盛り付けたら完成！`
+            ]
+        };
 
-        # 条件
-        - 調理法: ${cookingStyle}
-        - 調理時間: ${time}
-        - 材料の切り方: ${method}
-        - 味付け: ${seasoning}
-
-        # 材料
-        - ${ingredients.join('\n- ')}
-
-        # 回答の形式 (必ずこのJSON形式でお願いします)
-        {
-          "recipeName": "独創的な料理名",
-          "description": "20文字程度のキャッチーな説明",
-          "steps": ["手順1", "手順2", "手順3"]
-        }`;
-
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
-
-        res.json(JSON.parse(responseText));
+        // 生成したJSONをフロントエンドに返す
+        res.json(recipe);
 
     } catch (error) {
         console.error("エラー:", error);
