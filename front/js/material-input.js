@@ -1,85 +1,129 @@
-// script.js
 document.addEventListener('DOMContentLoaded', () => {
+    const AVAILABLE_INGREDIENTS = [
+        'きのこ', '卵', 'チーズ','ツナ缶', '鯖缶', '冷凍たこ焼き', 'かぼちゃ',
+        'マシュマロ','クロワッサン','うなぎ', '焼き芋', 'ポテチ'
+    ];
+
     const addBtn = document.getElementById('add-ingredient');
     const ingredientList = document.getElementById('ingredient-list');
     const removeBtn = document.getElementById('remove-ingredient');
+    const submitBtn = document.querySelector('.submit-btn');
 
-    const circledNumbers = [
-        '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩',
-        '⑪', '⑫', '⑬', '⑭', '⑮', '⑯', '⑰', '⑱', '⑲', '⑳'
-    ];
+    // ▼▼▼ 変更点：全てのドロップダウンの選択肢を更新する関数を追加 ▼▼▼
+    function updateAllDropdowns() {
+        const allSelects = ingredientList.querySelectorAll('.ingredient-select');
+        const selectedValues = [];
 
-    function updateIngredientNumbers() {
-        const allRows = ingredientList.querySelectorAll('.ingredient-row');
-        allRows.forEach((row, index) => {
-            const inputField = row.querySelector('.ingredient-input');
-            const currentNumber = index + 1;
-            let numberSymbol = (currentNumber <= circledNumbers.length) ? circledNumbers[currentNumber - 1] : currentNumber;
-            if (inputField) {
-                inputField.placeholder = `材料${numberSymbol}>・・・`;
+        // 現在選択されている全ての値を取得
+        allSelects.forEach(select => {
+            if (select.value) {
+                selectedValues.push(select.value);
             }
         });
+
+        // 各ドロップダウンの選択肢を更新
+        allSelects.forEach(select => {
+            const currentSelectedValue = select.value;
+            select.querySelectorAll('option').forEach(option => {
+                // 選択肢の値が「現在選択されている値のリスト」に含まれているかチェック
+                const isSelectedElsewhere = selectedValues.includes(option.value);
+
+                // もし他の場所で選択されていて、かつ、このドロップダウン自身の選択値でなければ無効化
+                if (isSelectedElsewhere && option.value !== currentSelectedValue) {
+                    option.disabled = true;
+                } else {
+                    option.disabled = false;
+                }
+            });
+        });
+    }
+
+    function createIngredientRow() {
+        const row = document.createElement('div');
+        row.className = 'ingredient-row';
+
+        const select = document.createElement('select');
+        select.className = 'ingredient-select';
+
+        // ▼▼▼ 変更点：ドロップダウンが変更された時に更新関数を呼ぶイベントリスナーを追加 ▼▼▼
+        select.addEventListener('change', updateAllDropdowns);
+
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = '材料を選択...';
+        defaultOption.value = '';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+
+        AVAILABLE_INGREDIENTS.forEach(ingredient => {
+            const option = document.createElement('option');
+            option.value = ingredient;
+            option.textContent = ingredient;
+            select.appendChild(option);
+        });
+
+        const quantityWrapper = document.createElement('div');
+        quantityWrapper.className = 'quantity-wrapper';
+        
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.className = 'quantity-input';
+        quantityInput.min = '0';
+        
+        quantityWrapper.appendChild(quantityInput);
+
+        row.appendChild(select);
+        row.appendChild(quantityWrapper);
+        
+        return row;
     }
 
     // 「+ 材料を追加」ボタンの機能
     addBtn.addEventListener('click', () => {
         const currentCount = ingredientList.querySelectorAll('.ingredient-row').length;
-
-        if (currentCount >= 5) {
-            // ★★★ 変更点：アラートを表示する行のコメントを解除 ★★★
+        if (currentCount >= 4) {
             alert('これ以上材料を追加できません！');
             return;
         }
-
-        const newRow = document.createElement('div');
-        newRow.className = 'ingredient-row';
-        newRow.innerHTML = `
-            <input type="text" class="ingredient-input" placeholder="">
-            <button class="category-btn">分類選択</button>
-        `;
-        ingredientList.appendChild(newRow);
-        updateIngredientNumbers();
+        ingredientList.appendChild(createIngredientRow());
+        // ▼▼▼ 変更点：行追加後にも更新関数を呼び、選択済みの項目を無効化 ▼▼▼
+        updateAllDropdowns();
     });
 
     // 「- 材料を削除」ボタンの機能
     removeBtn.addEventListener('click', () => {
         const allRows = ingredientList.querySelectorAll('.ingredient-row');
-        if (allRows.length > 0) {
+        if (allRows.length > 1) {
             allRows[allRows.length - 1].remove();
-            updateIngredientNumbers();
+            // ▼▼▼ 変更点：行削除後に更新関数を呼び、選択肢を有効化 ▼▼▼
+            updateAllDropdowns();
         }
     });
 
-    // ページ読み込み完了時に、最初の番号を整える
-    updateIngredientNumbers();
-});
-// front/js/material-input.js
+    // OKボタンの機能
+    submitBtn.addEventListener('click', () => {
+        const allSelects = document.querySelectorAll('.ingredient-select');
+        const ingredients = [];
 
-// ...（既存のコードはそのまま）...
+        allSelects.forEach(select => {
+            if (select.value) {
+                ingredients.push(select.value);
+            }
+        });
 
-// ▼▼▼ この部分を追記 ▼▼▼
-// OKボタン（submit-btn）の要素を取得
-const submitBtn = document.querySelector('.submit-btn');
-
-// OKボタンにクリックイベントリスナーを追加
-submitBtn.addEventListener('click', () => {
-    // 全ての材料入力欄の要素を取得
-    const allInputs = document.querySelectorAll('.ingredient-input');
-    const ingredients = [];
-
-    // 各入力欄の値を取得して配列に格納
-    allInputs.forEach(input => {
-        // 入力値が空でなければ追加
-        if (input.value.trim() !== '') {
-            ingredients.push(input.value.trim());
+        if (ingredients.length === 0) {
+            alert('材料を1つ以上選択してください。');
+            return;
         }
+
+        const params = new URLSearchParams({
+            ingredients: JSON.stringify(ingredients)
+        });
+        window.location.href = `surotto.html?${params.toString()}`;
     });
 
-    // 材料の配列をURLパラメータ用に変換
-    const params = new URLSearchParams({
-        ingredients: JSON.stringify(ingredients)
-    });
-
-    // 材料の情報をパラメータとして付けて、recipe-finish.htmlに遷移
-    window.location.href = `surotto.html?${params.toString()}`;
+    // 初期状態で3つの材料行を動的に生成
+    for (let i = 0; i < 3; i++) {
+        ingredientList.appendChild(createIngredientRow());
+    }
 });
