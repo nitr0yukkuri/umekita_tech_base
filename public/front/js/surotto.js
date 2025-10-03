@@ -1,20 +1,19 @@
 window.addEventListener('DOMContentLoaded', () => {
-    // --- ★効果音の準備ここから★ ---
-    // ファイルパスは自分の環境に合わせて変更してください
-    const clickSound = new Audio('../sound/bow-arrow-hit.mp3');
-    const spinStartSound = new Audio('../sound/ziyagura-reba.mp3');
-    const stopSound = new Audio('../sound/bow-arrow-hit.mp3');
-    const gogoSound = new Audio('../sound/ziyagura-gako.mp3');
-
+    // ★★★ パスを修正 ★★★
+    const clickSound = new Audio('/sound/bow-arrow-hit.mp3');
+    const spinStartSound = new Audio('/sound/ziyagura-reba.mp3');
+    const stopSound = new Audio('/sound/bow-arrow-hit.mp3');
+    const gogoSound = new Audio('/sound/ziyagura-gako.mp3');
+    // ★★★★★★★★★★★★★
 
     function playSound(audio) {
-        // play()はPromiseを返すため、エラーハンドリングを追加するとより安全です
         audio.currentTime = 0;
         audio.play().catch(error => console.log(`Error playing sound: ${error}`));
     }
-    // --- ★効果音の準備ここまで★ ---
 
-    // --- 画面要素 ---
+    // --- (以下、既存のコードが続く) ---
+    // (このファイル内の他の部分は変更不要です)
+// --- 画面要素 ---
     const startScreen = document.getElementById('start-screen');
     const styleRouletteScreen = document.getElementById('style-roulette-screen');
     const mainSlotScreen = document.getElementById('main-slot-screen');
@@ -118,58 +117,44 @@ window.addEventListener('DOMContentLoaded', () => {
         runMainRouletteForCurrentIngredient();
     }
 
-    // front/js/surotto.js の runMainRouletteForCurrentIngredient 関数をこちらに置き換え
+    function runMainRouletteForCurrentIngredient() {
+        animationFrameIds.forEach(id => {
+            if (id) {
+                cancelAnimationFrame(id);
+            }
+        });
+        animationFrameIds = [null, null, null];
 
-function runMainRouletteForCurrentIngredient() {
-    // 全てのリールアニメーションをここで完全に停止・リセットする
-    animationFrameIds.forEach(id => {
-        if (id) {
-            cancelAnimationFrame(id);
+        if (currentIngredientIndex >= ingredients.length) {
+            const lastResult = allResults.length > 0 ? allResults[allResults.length - 1] : null;
+            if (lastResult) {
+                const params = new URLSearchParams();
+                params.append('time', lastResult.time);
+                params.append('method', lastResult.cutting);
+                params.append('seasoning', lastResult.seasoning || 'なし');
+                window.location.href = `recipe-finish.html?${params.toString()}`;
+            } else {
+                window.location.href = 'recipe-finish.html';
+            }
+            return;
         }
-    });
-    animationFrameIds = [null, null, null]; // 管理用のID配列を初期化
-
-    // ★★★ 変更点: ここから ★★★
-    // 全ての材料の調理が終わったかチェック
-    if (currentIngredientIndex >= ingredients.length) {
         
-        // 最後の調理結果を取得
-        const lastResult = allResults.length > 0 ? allResults[allResults.length - 1] : null;
+        gogoLamp.classList.remove('lit');
+        thirdReel.classList.remove('hidden-reel');
+        thirdStopButton.classList.remove('hidden-reel');
 
-        if (lastResult) {
-            // URLパラメータを準備
-            const params = new URLSearchParams();
-            params.append('time', lastResult.time);
-            params.append('method', lastResult.cutting);
-            params.append('seasoning', lastResult.seasoning || 'なし'); // GOGO無しの場合も考慮
-
-            // パラメータを付けて recipe-finish.html にページを遷移
-            window.location.href = `recipe-finish.html?${params.toString()}`;
-
-        } else {
-            // もし結果がなければ、パラメータなしで遷移
-            window.location.href = 'recipe-finish.html';
-        }
-        return; // この後の処理を中断
+        const currentIngredient = ingredients[currentIngredientIndex];
+        currentIngredientNameDisplays.forEach(el => el.textContent = currentIngredient);
+        currentStyleNameDisplay.textContent = chosenCookingStyle.name;
+        
+        setupMainReels();
+        resultDisplay.classList.remove('show');
+        nextButton.disabled = true;
+        startButton.disabled = false;
+        stopButtons.forEach(b => b.disabled = true);
+        showScreen('main-slot-screen');
     }
-    // ★★★ 変更点: ここまで ★★★
-    
-    gogoLamp.classList.remove('lit');
-    
-    thirdReel.classList.remove('hidden-reel');
-    thirdStopButton.classList.remove('hidden-reel');
 
-    const currentIngredient = ingredients[currentIngredientIndex];
-    currentIngredientNameDisplays.forEach(el => el.textContent = currentIngredient);
-    currentStyleNameDisplay.textContent = chosenCookingStyle.name;
-    
-    setupMainReels();
-    resultDisplay.classList.remove('show');
-    nextButton.disabled = true;
-    startButton.disabled = false;
-    stopButtons.forEach(b => b.disabled = true);
-    showScreen('main-slot-screen');
-}
     function setupMainReels() {
         reelStrips.forEach((strip, index) => {
             const symbols = allReelData[chosenCookingStyle.id][index];
@@ -188,125 +173,87 @@ function runMainRouletteForCurrentIngredient() {
         });
     }
 
-   // front/js/surotto.js の startReel 関数をこちらに置き換え
+    function startReel(index) {
+        if (animationFrameIds[index]) {
+            cancelAnimationFrame(animationFrameIds[index]);
+        }
 
-function startReel(index) {
-    // 既に動いているアニメーションがあればキャンセル
-    if (animationFrameIds[index]) {
-        cancelAnimationFrame(animationFrameIds[index]);
-    }
+        const strip = reelStrips[index];
+        strip.style.transition = 'none';
 
-    const strip = reelStrips[index];
-    strip.style.transition = 'none'; // CSSアニメーションを無効化
+        let lastTime = 0;
+        const speed = 0.8;
 
-    let lastTime = 0;
-    // 速度の調整（値を大きくすると速くなります）
-    const speed = 0.8; // 1ミリ秒あたりに動くピクセル量
+        function spinLoop(timestamp) {
+            if (!lastTime) {
+                lastTime = timestamp;
+            }
+            const delta = timestamp - lastTime;
+            reelPositions[index] += speed * delta;
 
-    // requestAnimationFrameを使ったアニメーションループ
-    function spinLoop(timestamp) {
-        if (!lastTime) {
+            const symbols = allReelData[chosenCookingStyle.id][index];
+            const oneLoopHeight = symbols.length * SYMBOL_HEIGHT;
+            
+            const resetPoint = -oneLoopHeight;
+            if (reelPositions[index] > resetPoint) {
+                reelPositions[index] -= oneLoopHeight;
+            }
+            
+            strip.style.transform = `translateY(${reelPositions[index]}px)`;
+            
             lastTime = timestamp;
+            animationFrameIds[index] = requestAnimationFrame(spinLoop);
         }
-        // 前のフレームから経過した時間
-        const delta = timestamp - lastTime;
-
-        // ★変更点1★ 減算(-)を【加算(+)】に変更して、下方向に回転させる
-        reelPositions[index] += speed * delta;
-
-        // 座標がプラスに近づきすぎないようにするためのリセット処理
-        const symbols = allReelData[chosenCookingStyle.id][index];
-        const oneLoopHeight = symbols.length * SYMBOL_HEIGHT;
-        
-        // ★変更点2★ リセットの条件と処理を逆方向にする
-        const resetPoint = -oneLoopHeight; // 基準点 (例: -1周分の高さ)
-        if (reelPositions[index] > resetPoint) {
-            reelPositions[index] -= oneLoopHeight; // 基準点を超えたら、1周分巻き戻す
-        }
-        
-        // 実際にリールの位置を画面に反映
-        strip.style.transform = `translateY(${reelPositions[index]}px)`;
-        
-        lastTime = timestamp;
-        // 次のフレームで再度この関数を呼び出すようブラウザに予約
         animationFrameIds[index] = requestAnimationFrame(spinLoop);
     }
 
-    // 最初のフレームを要求
-    animationFrameIds[index] = requestAnimationFrame(spinLoop);
-}
- function onMainGameEnd() {
-    isSpinning = false;
-    const result = {
-        ingredient: ingredients[currentIngredientIndex],
-        styleName: chosenCookingStyle.name,
-        time: reels[0].dataset.finalSymbol,
-        cutting: reels[1].dataset.finalSymbol,
-        seasoning: isLampLitThisTurn ? reels[2].dataset.finalSymbol : null
-    };
-    allResults.push(result);
-    const resultMessage = result.seasoning ? `「${result.time}」「${result.cutting}」「${result.seasoning}」で決まり！` : `「${result.time}」「${result.cutting}」！`;
-    
-    // テキストをセットし、アニメーションを開始
-    resultText.textContent = resultMessage;
-    resultDisplay.classList.add('show');
+    function onMainGameEnd() {
+        isSpinning = false;
+        const result = {
+            ingredient: ingredients[currentIngredientIndex],
+            styleName: chosenCookingStyle.name,
+            time: reels[0].dataset.finalSymbol,
+            cutting: reels[1].dataset.finalSymbol,
+            seasoning: isLampLitThisTurn ? reels[2].dataset.finalSymbol : null
+        };
+        allResults.push(result);
+        const resultMessage = result.seasoning ? `「${result.time}」「${result.cutting}」「${result.seasoning}」で決まり！` : `「${result.time}」「${result.cutting}」！`;
+        
+        resultText.textContent = resultMessage;
+        resultDisplay.classList.add('show');
 
-    // ★★★ 変更点: resultSoundの再生に関する記述を完全に削除 ★★★
-
-    currentIngredientIndex++;
-    nextButton.disabled = false;
-}
-
-    function showSummary() {
-        summaryList.innerHTML = '';
-        allResults.forEach(res => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'summary-item';
-            const seasoningText = res.seasoning ? `, 味付け: ${res.seasoning}` : '';
-            itemDiv.innerHTML = `<div class="summary-item-title">${res.ingredient}</div><p>調理法: ${res.styleName} | 時間: ${res.time}, 切り方: ${res.cutting}${seasoningText}</p>`;
-            summaryList.appendChild(itemDiv);
-        });
-        showScreen('summary-screen');
+        currentIngredientIndex++;
+        nextButton.disabled = false;
     }
-
 
     cookingStartButton.addEventListener('click', () => { playSound(clickSound); showScreen('style-roulette-screen'); });
     styleStartButton.addEventListener('click', () => { playSound(clickSound); startStyleRoulette(); });
     nextButton.addEventListener('click', () => { playSound(clickSound); runMainRouletteForCurrentIngredient(); });
-startButton.addEventListener('click', () => {
-    if (isSpinning) return;
-
-    // ★★★ 変更点1: GOGOランプの状態に関わらず、まず開始音を鳴らす ★★★
-    playSound(spinStartSound); 
-
-    // isSpinningなどの状態を更新
-    isSpinning = true;
-    stoppedReels = [false, false, false];
-    resultDisplay.classList.remove('show');
-    isLampLitThisTurn = Math.random() < 0.5;
-    gogoLamp.classList.toggle('lit', isLampLitThisTurn);
-    startButton.disabled = true;
-
-    if (isLampLitThisTurn) {
-        // GOGOランプが点灯した場合
-        // ★★★ 変更点2: 0.6秒遅らせてGOGO!の音を鳴らす ★★★
-        setTimeout(() => {
-            playSound(gogoSound);
-        }, 600); // 600ミリ秒 = 0.6秒
-
-        stopButtons.forEach(b => b.disabled = false);
-        thirdReel.classList.remove('hidden-reel');
-        thirdStopButton.classList.remove('hidden-reel');
-    } else {
-        // 通常の場合 (音の再生は不要)
-        stopButtons.forEach((b, i) => { b.disabled = (i === 2); });
-        thirdReel.classList.add('hidden-reel');
-        thirdStopButton.classList.add('hidden-reel');
-    }
     
-    // 全リールの回転を開始
-    reels.forEach((_, i) => { startReel(i); });
-});
+    startButton.addEventListener('click', () => {
+        if (isSpinning) return;
+        playSound(spinStartSound); 
+        isSpinning = true;
+        stoppedReels = [false, false, false];
+        resultDisplay.classList.remove('show');
+        isLampLitThisTurn = Math.random() < 0.5;
+        gogoLamp.classList.toggle('lit', isLampLitThisTurn);
+        startButton.disabled = true;
+
+        if (isLampLitThisTurn) {
+            setTimeout(() => { playSound(gogoSound); }, 600);
+            stopButtons.forEach(b => b.disabled = false);
+            thirdReel.classList.remove('hidden-reel');
+            thirdStopButton.classList.remove('hidden-reel');
+        } else {
+            stopButtons.forEach((b, i) => { b.disabled = (i === 2); });
+            thirdReel.classList.add('hidden-reel');
+            thirdStopButton.classList.add('hidden-reel');
+        }
+        
+        reels.forEach((_, i) => { startReel(i); });
+    });
+
     stopButtons.forEach((button, index) => {
         button.addEventListener('click', () => {
             if (!isSpinning || stoppedReels[index]) return;
