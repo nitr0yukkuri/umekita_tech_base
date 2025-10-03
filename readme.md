@@ -1,46 +1,54 @@
 # github の基本操作方法
 
-# 作業する前にすること
-## クローン(コードのコピー)
+## 作業する前にすること
+### クローン(コードのコピー)
 git clone https://github.com/nitr0yukkuri/umekita_tech_base
 → 現時点のGitHubにあるコードをローカルにコピーする
 
-## プル(既に存在してるコードを読み込み)
+### プル(既に存在してるコードを読み込み)
 git pull origin main
 → 最新の変更を反映する
 
-## ブランチ(枝分かれコピー)
-### 新しく作業ブランチを作るとき
+### ブランチ(枝分かれコピー)
+#### 新しく作業ブランチを作るとき
 git checkout -b "やることをここに入力"
 → branchの作成と移動を同時にする
 
-### 既存のブランチに移動するとき
+#### 既存のブランチに移動するとき
 git checkout ブランチ名
 
-git branch 
-→ 現在地とブランチ一覧が見れる  
+git branch
+→ 現在地とブランチ一覧が見れる
 （* が付いているのが現在のブランチ）
 
-# 作業後にすること
-## ステージング
+#### ブランチを削除するとき
+git branch -d ブランチ名
+→ マージ済みのローカルブランチを削除
+
+
+## 作業後にすること
+### ステージング
 git add .
 → 変更したファイルを全て選択（ステージング）
 
-## コミット
+### コミット
 git commit -m "ここにコミットメッセージ"
-→ 変更を確定して記録  
+→ 変更を確定して記録
 （コミットはこまめに分けるとバグ対応が楽）
 
-## プッシュ
+### プッシュ
 git push origin ブランチ名
 → 変更をGitHubに送る
+
 # ファイル構成
+
 ## HTML
 - `title.html`: トップページ。ここから「レシピを作る」か「闇ガチャを回す」かを選択する画面
 - `material-input.html`: 「レシピを作る」を選択したときの材料入力画面
 - `surotto.html`: 材料からレシピを生成するスロットゲーム画面
 - `gacha.html`: 「闇ガチャを回す」を選択したときのガチャ画面。
 - `amazing-cooking-screen.html`: ガチャで当たりが出たときの結果画面
+- `recipe-finish.html`: レシピが完成したことを表示する画面
 
 ## CSS (front/css)
 - `common.css`: 全てのページ(surotto.html以外)に共通するスタイルが定義しているよ
@@ -49,6 +57,7 @@ git push origin ブランチ名
 - `surotto.css`: スロットゲーム画面(`surotto.html`)のスタイル。
 - `gacha.css`: ガチャ画面(`gacha.html`)のスタイル。
 - `amazing-cooking-screnn.css`: ガチャ結果画面(`amazing-cooking-screen.html`)のスタイル。
+- `recipe-finish.css`: レシピ完成画面(`recipe-finish.html`)のスタイル
 
 ## JavaScript (front/js)
 - `title.js`: トップページ(`title.html`)のボタンの画面遷移を制御
@@ -56,9 +65,25 @@ git push origin ブランチ名
 - `surotto.js`: スロットゲームのロジックを制御します。リールの回転や停止、結果の判定などをしている
 - `gacha.js`: ガチャ画面(`gacha.html`)のボタンが押されたときにガチャを実行し、結果画面に遷移している
 - `amazing-cooking-screnn.js`: ガチャ結果画面(`amazing-cooking-screen.html`)でSNS共有ボタンの機能を制御します。
+- `recipe-finish.js`: レシピ完成画面のSNS共有ボタンや「スタートへ戻る」ボタンの機能を制御
 
 ## 画像 (img)
 - `haikei.png`: スロットゲーム画面の背景画像です。
 - `gacha.png`: ガチャ画面のガチャマシンの画像です。
 - `1402858_s.jpg`: ガチャの結果画面で表示される料理の画像です。
+- `gurumaker_icon.png`: アプリのアイコン画像です。
 
+## 音声 (sound)
+- `bow-arrow-hit.mp3`: スロットのリール停止音です。
+- `ziyagura-gako.mp3`: スロットのGOGOランプ点灯音です。
+- `ziyagura-reba.mp3`: スロットのレバー音です。
+
+## バックエンド (back)
+- `server.js`: レシピ生成APIを提供するExpressサーバーです。
+- `package.json`: バックエンドの依存関係を定義しています。
+- `Dockerfile`: バックエンドサーバーをコンテナ化するための設定ファイルです。
+- `yaminabe.db`: レシピデータを保存するSQLiteデータベースファイルです。
+
+## その他
+- `.gitignore`: Gitの追跡から除外するファイルを指定します。
+- `package.json`: プロジェクト全体の依存関係を定義しています。
