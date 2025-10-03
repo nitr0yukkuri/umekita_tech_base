@@ -5,14 +5,17 @@ FROM node:20
 WORKDIR /app
 
 # 依存関係のインストール
-COPY package*.json ./
+# backフォルダの中のpackage.jsonをコピーする
+COPY back/package*.json ./
 RUN npm install
 
 # アプリのコードをコピー
+# プロジェクトの全ファイルをコピーする
 COPY . .
 
 # ポートを開放
 EXPOSE 3000
 
 # アプリを起動
-CMD ["npm", "start"]
+# backフォルダの中のserver.jsを実行する
+CMD ["node", "back/server.js"]
