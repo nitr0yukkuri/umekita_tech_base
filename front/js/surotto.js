@@ -269,6 +269,7 @@ function startReel(index) {
         showScreen('summary-screen');
     }
 
+
     cookingStartButton.addEventListener('click', () => { playSound(clickSound); showScreen('style-roulette-screen'); });
     styleStartButton.addEventListener('click', () => { playSound(clickSound); startStyleRoulette(); });
     nextButton.addEventListener('click', () => { playSound(clickSound); runMainRouletteForCurrentIngredient(); });
