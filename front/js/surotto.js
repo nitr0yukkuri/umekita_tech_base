@@ -152,7 +152,6 @@ function onMainGameEnd() {
     resultDisplay.classList.add('show');
 
     currentIngredientIndex++;
-    // 自動で次に進むsetTimeoutは削除
 }
 
 // ==========================================================
@@ -160,9 +159,13 @@ function onMainGameEnd() {
 // ==========================================================
 
 cookingStartButton.addEventListener('click', () => showScreen('style-roulette-screen'));
-restartButton.addEventListener('click', initializeApp);
 
-// ★★★「次へ」ボタンを押したら次の処理に進む★★★
+// ▼▼▼ 変更点 ▼▼▼
+restartButton.addEventListener('click', () => {
+    window.location.href = 'recipe-finish.html';
+});
+// ▲▲▲ 変更ここまで ▲▲▲
+
 nextButton.addEventListener('click', () => {
     runMainRouletteForCurrentIngredient();
 });
