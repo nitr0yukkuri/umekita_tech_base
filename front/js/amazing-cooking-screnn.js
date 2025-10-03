@@ -1,23 +1,25 @@
 // front/js/amazing-cooking-screnn.js
-document.addEventListener('DOMContentLoaded', () => {
-    const shareButton = document.getElementById('share-button');
-    // ▼▼▼ この行を追加 ▼▼▼
-    const returnButton = document.getElementById('return-button');
 
-    shareButton.addEventListener('click', () => {
-        // シェアするテキストを定義
-        const shareText = "グルメイカーの闇ガチャで「すごい卵焼き！」をゲットしたよ！ #グルメイカー";
+// ページが読み込まれたときに実行
+window.addEventListener('load', () => {
+    // URLからパラメータを取得
+    const params = new URLSearchParams(window.location.search);
+    const recipeName = params.get('recipeName');
+    const description = params.get('description');
 
-        // X(Twitter)の投稿用URLを作成
-        const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    // HTML要素に取得した情報を表示
+    const recipeNameElement = document.getElementById('recipe-name');
+    const recipeDescriptionElement = document.getElementById('recipe-description');
 
-        // 新しいタブで投稿画面を開く
-        window.open(shareUrl, '_blank');
-    });
+    if (recipeName) {
+        recipeNameElement.textContent = recipeName;
+    }
+    if (description) {
+        recipeDescriptionElement.textContent = description;
+    }
+});
 
-    // ▼▼▼ この処理を追記 ▼▼▼
-    // 「タイトルへ戻る」ボタンがクリックされた時の処理
-    returnButton.addEventListener('click', () => {
-        window.location.href = 'title.html'; // title.htmlへ画面遷移
-    });
+// タイトルへ戻るボタンの処理
+document.getElementById('return-button').addEventListener('click', () => {
+    window.location.href = 'index.html';
 });

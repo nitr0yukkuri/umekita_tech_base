@@ -1,76 +1,342 @@
+/* front/css/surotto.css (修正版) */
+
 body {
-    background-image: url('/img/haikei.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-color: #0d1a2f;
+    color: #fff;
+    font-family: 'Noto Sans JP', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
-    color: #fff;
-}
-
-.hidden { display: none !important; }
-.screen { width: 90%; max-width: 500px; }
-
-#start-screen, #summary-screen {
-    background: rgba(10, 25, 47, 0.7);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(0, 255, 255, 0.5);
-    border-radius: 20px;
-    padding: 30px 40px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
     text-align: center;
+    background-image: url('../../img/haikei.png'); /* パスは環境に合わせて調整してください */
+    background-size: cover;
+    background-position: center;
 }
 
-#start-screen h2, #summary-screen h2 {
+.screen {
+    width: 100%;
+    max-width: 550px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h2 {
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff;
     margin-top: 0;
+    margin-bottom: 25px;
+}
+
+/* --- start-screen & summary-screen --- */
+#ingredient-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+#ingredient-list li {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00ffff;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+#summary-list {
+    margin-bottom: 30px;
+    text-align: left;
+}
+.summary-item {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00ffff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+.summary-item-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ff00ff;
+    margin-bottom: 10px;
+}
+.summary-item p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+#cooking-start-button, #restart-button, #next-button {
+    width: 80%;
+    padding: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px #00ffff;
+}
+#cooking-start-button:hover, #restart-button:hover, #next-button:hover:not(:disabled) {
+    background: #00ffff;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #00ffff;
+}
+#next-button {
+    margin: 10px auto 0;
+}
+
+
+/* --- style-roulette-screen --- */
+.style-reel-container {
+    width: 250px;
+    height: 100px;
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px auto;
+    position: relative;
+    background: rgba(0,0,0,0.7);
+}
+#style-reel-strip {
+    position: absolute;
+    width: 100%;
+    transition: transform 3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+#style-reel-strip .symbol {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+}
+#style-start-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid #ff00ff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px #ff00ff;
+}
+#style-start-button:hover:not(:disabled) {
+    background: #ff00ff;
+    color: #0d1a2f;
+    box-shadow: 0 0 15px #ff00ff;
+}
+
+/* --- main-slot-screen --- */
+.slot-machine {
+    background: rgba(10, 20, 40, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid #0ff;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.5);
+    padding: 20px;
+}
+.header-display {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 15px;
+}
+.header-display .current-ingredient-name {
     color: #00ffff;
     text-shadow: 0 0 8px #00ffff;
 }
-
-#ingredient-list { list-style: none; padding: 0; margin: 20px 0; }
-#ingredient-list li { background: rgba(0,0,0,0.4); margin-bottom: 10px; padding: 10px; border-radius: 5px; font-size: 1.2em; color: #ff00ff; font-weight: bold; }
-
-#summary-list { text-align: left; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-#summary-list .summary-item { margin-bottom: 15px; border-left: 3px solid #00ffff; padding-left: 10px; }
-#summary-list .summary-item-title { font-weight: bold; color: #ff00ff; font-size: 1.2em; }
-
-#cooking-start-button, #restart-button, #style-start-button {
-    width: 100%; padding: 15px; font-size: 20px; border-radius: 10px; cursor: pointer; background: transparent;
-    border: 2px solid #00ffff; color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.7); transition: all 0.3s ease;
+.header-display .current-style-name {
+    color: #ff00ff;
+    text-shadow: 0 0 8px #ff00ff;
 }
-#cooking-start-button:hover, #restart-button:hover, #style-start-button:hover { background: #00ffff; color: #0d1a2f; box-shadow: 0 0 15px #00ffff; }
 
-#style-roulette-screen { background: rgba(10, 25, 47, 0.7); backdrop-filter: blur(10px); border: 2px solid rgba(0, 255, 255, 0.5); border-radius: 20px; padding: 30px 40px; box-shadow: 0 0 25px rgba(0, 255, 255, 0.4); text-align: center; }
-#style-roulette-screen h2 { margin-top: 0; color: #00ffff; text-shadow: 0 0 8px #00ffff; }
-.style-reel-container { width: 250px; height: 100px; border: 2px solid #00ffff; border-radius: 10px; overflow: hidden; margin: 20px auto; position: relative; background: rgba(0,0,0,0.7); }
-#style-reel-strip { position: absolute; width: 100%; }
-#style-reel-strip .symbol { height: 100px; display: flex; justify-content: center; align-items: center; font-size: 2.5em; font-weight: bold; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
-#style-start-button:disabled { background-color: #555; border-color: #555; color: #888; cursor: not-allowed; text-shadow: none; }
+.gogo-lamp {
+    width: 80px;
+    height: 80px;
+    border: 3px solid rgba(255, 0, 255, 0.3);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(255, 0, 255, 0.4);
+    transition: all 0.2s ease-in-out;
+}
+.gogo-lamp.lit {
+    background-color: #ff00ff;
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
+}
 
-.slot-machine { background: rgba(10, 25, 47, 0.7); backdrop-filter: blur(10px); border: 2px solid rgba(0, 255, 255, 0.5); border-radius: 20px; padding: 30px; box-shadow: 0 0 25px rgba(0, 255, 255, 0.4); width: 500px; }
-#selected-style-display { text-align: center; font-size: 1.2em; font-weight: bold; color: #ff00ff; text-shadow: 0 0 8px #ff00ff; margin-bottom: 15px; }
-.gogo-lamp { width: 100px; height: 100px; background: transparent; border: 3px solid rgba(255, 0, 255, 0.3); border-radius: 50%; margin: 0 auto 25px; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; color: rgba(255, 0, 255, 0.4); transition: all 0.2s ease-in-out; text-shadow: 0 0 5px rgba(255, 0, 255, 0.3); }
-.gogo-lamp.lit { background-color: #ff00ff; color: #fff; border-color: #fff; box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 60px #ff00ff; text-shadow: 0 0 10px #fff; }
-.reels { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-.reel { width: 150px; height: 180px; background-color: rgba(0, 0, 0, 0.7); border: 2px solid #00ffff; box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5); border-radius: 10px; overflow: hidden; position: relative; }
-.reel-strip { width: 100%; position: absolute; top: 0; left: 0; }
-.symbol { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #00ffff; text-shadow: 0 0 8px #00ffff; }
-#result-display { background: rgba(0, 0, 0, 0.5); border: 2px solid #ff00ff; border-radius: 10px; margin-bottom: 20px; text-align: center; box-shadow: 0 0 15px rgba(255, 0, 255, 0.5); opacity: 0; transform: scaleY(0); transform-origin: top; transition: transform 0.4s ease-out, opacity 0.4s ease-out; height: 0; overflow: hidden; }
-#result-display.show { opacity: 1; transform: scaleY(1); height: auto; padding: 15px; }
-#result-display h3 { margin: 0 0 10px 0; font-weight: bold; color: #ff00ff; text-shadow: 0 0 5px #ff00ff; }
-#result-display p { margin: 0; font-size: 1.1em; color: #fff; font-weight: bold; }
-#next-button { background: transparent; border: 2px solid #00ffff; color: #00ffff; padding: 10px 30px; margin-top: 15px; font-size: 16px; font-family: 'Orbitron', 'Noto Sans JP', sans-serif; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-shadow: 0 0 5px rgba(0, 255, 255, 0.7); display: none; }
-#next-button:hover { background: #00ffff; color: #0d1a2f; box-shadow: 0 0 15px #00ffff; }
-#result-display.show #next-button { display: inline-block; }
-.controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-.stop-buttons { display: flex; gap: 15px; width: 100%; justify-content: center; }
-button { background: transparent; border: 2px solid #ff00ff; color: #ff00ff; font-family: 'Orbitron', 'Noto Sans JP', sans-serif; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-shadow: 0 0 5px rgba(255, 0, 255, 0.7); }
-button:hover:not(:disabled) { background: #ff00ff; color: #0d1a2f; box-shadow: 0 0 15px #ff00ff; text-shadow: none; }
-.stop-button { flex-grow: 1; padding: 10px; font-size: 16px; }
-#start-button { width: 80%; padding: 15px 40px; font-size: 20px; border-color: #00ffff; color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.7); }
-#start-button:hover:not(:disabled) { background: #00ffff; color: #0d1a2f; box-shadow: 0 0 15px #00ffff; }
-button:disabled { border-color: #555; color: #555; text-shadow: none; cursor: not-allowed; }
+.reels {
+    display: flex;
+    justify-content: space-between;
+    height: 180px;
+    position: relative;
+    border: 1px solid #077;
+    border-radius: 10px;
+    background: #000;
+    margin-bottom: 20px;
+}
+.reels::before,
+.reels::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 2;
+    pointer-events: none;
+}
+.reels::before {
+    top: 0;
+    background: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+.reels::after {
+    bottom: 0;
+    background: linear-gradient(to top, #000 0%, transparent 100%);
+}
+
+.reel {
+    width: 32%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.reel-strip {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.reel-strip.spinning {
+    transition: transform 0.1s linear; /* 回転中は速く */
+    /* filter: blur(2px);  <-- この行を削除またはコメントアウト */
+}
+.reel-strip:not(.spinning) {
+    transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1); /* 停止時は滑らかに */
+}
+
+.symbol, .reel .reel-strip div {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff;
+    padding: 0 5px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#result-display {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #ff00ff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: all 0.4s ease-out;
+    height: 0;
+    overflow: hidden;
+}
+#result-display.show {
+    opacity: 1;
+    transform: scaleY(1);
+    height: auto;
+    padding: 15px;
+}
+#result-display h3 {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    color: #ff00ff;
+    text-shadow: 0 0 5px #ff00ff;
+}
+#result-display p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #fff;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.stop-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+.stop-button {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #ff00ff;
+    color: #ff00ff;
+    background: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+#start-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+button:disabled {
+    border-color: #555 !important;
+    color: #555 !important;
+    text-shadow: none !important;
+    cursor: not-allowed !important;
+    background: rgba(50,50,50,0.5) !important;
+    box-shadow: none !important;
+}
+/* 【追加】リール間の仕切り線 */
+.reel:not(:last-child) {
+    border-right: 1px solid #077;
+}
+/* 【追加】3番目のリールとボタンを非表示にするためのスタイル */
+#reel2, .stop-button[data-reel="2"] {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+#reel2.hidden-reel, 
+.stop-button[data-reel="2"].hidden-reel {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* クリックもできなくする */
+}
