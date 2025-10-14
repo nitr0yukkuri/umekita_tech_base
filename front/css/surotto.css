@@ -326,7 +326,7 @@ button:disabled {
     background: rgba(50,50,50,0.5) !important;
     box-shadow: none !important;
 }
-/* 【追加】リール間の仕切り線 */
+/* 【追加】リール間のaaaa仕切り線 */
 .reel:not(:last-child) {
     border-right: 1px solid #077;
 }
