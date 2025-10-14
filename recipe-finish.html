@@ -1,34 +1,25 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>レシピ完成！</title>
-    <link rel="stylesheet" href="./front/css/common.css">
+    
     <link rel="stylesheet" href="./front/css/recipe-finish.css">
 </head>
-
 <body>
+<div class="container">
+    <h2 id="recipe-title" class="finish-title"></h2>
+    <img src="" alt="完成した料理の画像" id="recipe-image" class="recipe-image">
+    <div id="recipe-details" class="recipe-details-box"></div>
+    <div class="rating-box">味評価 ★☆☆☆☆</div>
 
-    <div class="container">
+    <button id="share-button" class="share-button">Xで共有</button>
 
-        <h2 class="finish-title">レシピ完成！</h2>
-
-        <img src="./img/1402858_s.jpg" alt="完成した料理" class="recipe-image">
-
-        <div class="rating-box">
-            味評価<span class="star">★</span><span class="star">☆</span><span class="star">☆</span><span
-                class="star">☆</span><span class="star">☆</span>
-        </div>
-
-        <button id="share-button" class="share-button">Xで共有</button>
-
-        <button id="return-button" class="return-button">スタートへ戻る</button>
-
-    </div>
-
-    <script src="./front/js/recipe-finish.js"></script>
+    <button id="save-button" class="save-button">このレシピをガチャに追加</button>
+    
+    <button id="return-button" class="return-button">スタートへ戻る</button>
+</div>
+<script src="./front/js/recipe-finish.js"></script>
 </body>
-
 </html>

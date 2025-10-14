@@ -123,46 +123,29 @@ window.addEventListener('DOMContentLoaded', () => {
 function runMainRouletteForCurrentIngredient() {
     // 全てのリールアニメーションをここで完全に停止・リセットする
     animationFrameIds.forEach(id => {
-        if (id) {
-            cancelAnimationFrame(id);
-        }
+        if (id) { cancelAnimationFrame(id); }
     });
-    animationFrameIds = [null, null, null]; // 管理用のID配列を初期化
+    animationFrameIds = [null, null, null];
 
-    // ★★★ 変更点: ここから ★★★
     // 全ての材料の調理が終わったかチェック
     if (currentIngredientIndex >= ingredients.length) {
-        
-        // 最後の調理結果を取得
-        const lastResult = allResults.length > 0 ? allResults[allResults.length - 1] : null;
+        // ★★★変更点★★★
+        // 全調理結果(allResults)と調理法(chosenCookingStyle)をsessionStorageに保存
+        sessionStorage.setItem('finalRecipe', JSON.stringify(allResults));
+        sessionStorage.setItem('cookingStyle', JSON.stringify(chosenCookingStyle));
 
-        if (lastResult) {
-            // URLパラメータを準備
-            const params = new URLSearchParams();
-            params.append('time', lastResult.time);
-            params.append('method', lastResult.cutting);
-            params.append('seasoning', lastResult.seasoning || 'なし'); // GOGO無しの場合も考慮
-
-            // パラメータを付けて recipe-finish.html にページを遷移
-            window.location.href = `recipe-finish.html?${params.toString()}`;
-
-        } else {
-            // もし結果がなければ、パラメータなしで遷移
-            window.location.href = 'recipe-finish.html';
-        }
-        return; // この後の処理を中断
+        // recipe-finish.html にページを遷移
+        window.location.href = 'recipe-finish.html';
+        return; 
     }
-    // ★★★ 変更点: ここまで ★★★
     
+    // （...以下のコードは変更なし...）
     gogoLamp.classList.remove('lit');
-    
     thirdReel.classList.remove('hidden-reel');
     thirdStopButton.classList.remove('hidden-reel');
-
     const currentIngredient = ingredients[currentIngredientIndex];
     currentIngredientNameDisplays.forEach(el => el.textContent = currentIngredient);
     currentStyleNameDisplay.textContent = chosenCookingStyle.name;
-    
     setupMainReels();
     resultDisplay.classList.remove('show');
     nextButton.disabled = true;
