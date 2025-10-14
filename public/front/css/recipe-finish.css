@@ -1,124 +1,138 @@
 /* front/css/recipe-finish.css */
 
-/* Google Fontsからフォントを読み込み */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-
-/* 全体の基本スタイル */
 body {
-    background-color: #f4f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #0d1a2f;
+    background-image: url('../../img/haikei.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 40px 20px; /* 上下の余白を増やす */
+    color: #fff;
+    text-align: center;
+}
+.screen {
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto; /* 中央揃え */
+}
+.finish-title {
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    word-break: break-all; /* 長い名前でも折り返す */
+}
+/* (以下、前回の回答と同じ内容) */
+/* 料理画像 */
+.recipe-image {
+    width: 80%;
+    max-width: 400px;
+    height: auto;
+    border: 2px solid #00ffff;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* 調理工程のボックス */
+.recipe-details-box {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #ff00ff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.recipe-details-box h4 {
+    margin: 0 0 10px 0;
+    color: #ff00ff;
+    text-align: center;
+}
+
+.recipe-details-box ul {
+    list-style: none;
+    padding: 0;
     margin: 0;
 }
 
-/* common.cssのスタイルを上書き */
-.container {
-    border-radius: 20px;
+.recipe-details-box li {
+    padding: 5px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+}
+.recipe-details-box li:last-child {
+    border-bottom: none;
+}
+
+/* ボタン類 */
+.button-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-sizing: border-box;
-    color: #333333;
-}
-
-/* 「レシピ完成！」のタイトル */
-.finish-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-top: 60px;
-    margin-bottom: 30px;
-    color: #00ffff;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+    gap: 15px;
     width: 100%;
-    text-align: center;
 }
 
-/* 料理の画像 */
-.recipe-image {
-    width: 70%;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    border: 2px solid rgba(0, 255, 255, 0.5);
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-}
-
-/* 味評価のボックス */
-.rating-box {
-    width: 85%;
+.rating-button,
+.share-button,
+.return-button {
+    width: 80%;
     padding: 15px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
-    background: transparent;
-    border: 2px solid #00ffff;
+    font-size: 1.1em;
+    font-weight: bold;
     border-radius: 50px;
     cursor: pointer;
-    text-align: center;
     transition: all 0.3s ease;
-    margin-bottom: 20px;
-    /* ▼▼▼ 変更点: この1行を追加 ▼▼▼ */
-    box-sizing: border-box;
 }
 
-.rating-box .star {
-    font-size: 1.3rem;
-    color: #00ffff;
-}
-
-/* 共有ボタン */
-.share-button {
-    width: 85%;
-    padding: 18px;
-    border-radius: 50px;
-    border: none;
+.rating-button, .share-button {
     background-color: #00ffff;
     color: #0d1a2f;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    margin-top: 5px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
-    box-sizing: border-box; /* 念のためこちらも指定 */
+    border: none;
+    box-shadow: 0 0 15px #00ffff;
 }
 
-.share-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 255, 255, 0.4);
-}
-
-.share-button:active {
-    transform: translateY(0);
-}
-
-/* スタートへ戻るボタン */
 .return-button {
-    width: 85%;
-    padding: 15px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #d8b4fe;
-    text-shadow: 0 0 5px rgba(138, 43, 226, 0.7);
     background: transparent;
-    border: 2px solid #d8b4fe;
-    border-radius: 50px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
-    margin-bottom: 60px;
-    box-sizing: border-box; /* 念のためこちらも指定 */
+    color: #ff00ff;
+    border: 2px solid #ff00ff;
+}
+
+.rating-button:hover, .share-button:hover {
+    transform: scale(1.05);
 }
 
 .return-button:hover {
-    background: #d8b4fe;
+    background: #ff00ff;
     color: #0d1a2f;
-    box-shadow: 0 0 15px #8A2BE2;
-    text-shadow: none;
+    box-shadow: 0 0 15px #ff00ff;
+}
+/* front/css/recipe-finish.css の末尾に追加 */
+
+.save-button {
+    width: 80%;
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f0ad4e; /* 例：オレンジ色 */
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 10px rgba(240, 173, 78, 0.4);
+    margin-bottom: 15px;
+}
+
+.save-button:hover {
+    transform: scale(1.05);
+}
+
+.save-button:disabled {
+    background-color: #555;
+    color: #aaa;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
