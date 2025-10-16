@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     generateAndDisplayRecipe();
 });
 
-// --- ヘルパー関数 (ファイルの下部に配置) ---
+// --- ヘルパあああー関数 (ファイルの下部に配置) ---
 
 function generateRecipeName(ingredients, cookingStyle) {
     const mainIngredient = ingredients[0] || '奇跡';
