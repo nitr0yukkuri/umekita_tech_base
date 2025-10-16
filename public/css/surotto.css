@@ -10,7 +10,7 @@ body {
     height: 100vh;
     margin: 0;
     text-align: center;
-    background-image: url('../../img/haikei.png'); /* パスは環境に合わせて調整してください */
+    background-image: url('/img/haikei.png'); /* パスは環境に合わせて調整してください */
     background-size: cover;
     background-position: center;
 }

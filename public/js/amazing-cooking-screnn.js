@@ -1,4 +1,4 @@
-// front/js/amazing-cooking-screnn.js
+// front/js/amazing-cooking-screen.js
 
 // ページが読み込まれたときに実行
 window.addEventListener('load', () => {
