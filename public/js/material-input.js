@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams({
             ingredients: JSON.stringify(ingredientsData) // JSON文字列としてデータを渡す
         });
-        window.location.href = `surotto.html?${params.toString()}`;
+        window.location.href = `/surotto.html?${params.toString()}`;
     });
 
     // 初期状態で1つの材料行を生成

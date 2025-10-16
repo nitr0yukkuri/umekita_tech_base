@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsElement = document.getElementById('recipe-details');
     const shareButton = document.getElementById('share-button');
     const returnButton = document.getElementById('return-button');
+    const saveButton = document.getElementById('save-button'); // Added this line
 
     async function generateAndDisplayRecipe() {
         const recipeData = JSON.parse(sessionStorage.getItem('finalRecipe'));

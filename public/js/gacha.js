@@ -30,7 +30,7 @@ drawButton.addEventListener('click', async () => {
             
             // 1.5秒待ってから結果画面へ遷移
             setTimeout(() => {
-                window.location.href = `amazing-cooking-screen.html?${params.toString()}`;
+                window.location.href = `/amazing-cooking-screen.html?${params.toString()}`;
             }, 1500);
 
         } else {
