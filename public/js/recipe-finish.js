@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. 必要なHTML要素をすべて取得
     const titleElement = document.getElementById('recipe-title');
     const imageElement = document.getElementById('recipe-image');
     const detailsElement = document.getElementById('recipe-details');
     const shareButton = document.getElementById('share-button');
     const returnButton = document.getElementById('return-button');
-    const saveButton = document.getElementById('save-button'); // Added this line
+    const saveButton = document.getElementById('save-button');
 
+    // 2. レシピ生成から表示まですべてを行うメイン関数
     async function generateAndDisplayRecipe() {
+        
+        // 3. スロット画面からデータを取得
         const recipeData = JSON.parse(sessionStorage.getItem('finalRecipe'));
         const styleData = JSON.parse(sessionStorage.getItem('cookingStyle'));
 
@@ -15,19 +19,55 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 1. レシピ名をローカルの関数で生成
         const ingredients = recipeData.map(r => r.ingredient.split('(')[0]);
         const cookingStyle = styleData.name;
-        const recipeName = generateRecipeName(ingredients, cookingStyle);
-        titleElement.textContent = recipeName;
+        
+        let recipeName, description, steps;
 
-        // 2. 画像生成APIを呼び出し
+        // 4. サーバーのAPIを呼び出して「凝った名前」と「調理工程」を生成
         try {
-            // 画像生成中はローディング表示
-            imageElement.src = ""; // 古い画像をクリア
-            imageElement.alt = "画像を生成中...";
+            titleElement.textContent = "レシピ名を生成中...";
+            const recipeResponse = await fetch('/api/generate-recipe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ingredients: ingredients,
+                    cookingStyle: cookingStyle,
+                    recipeData: recipeData
+                }),
+            });
+            
+            if (!recipeResponse.ok) {
+                throw new Error('レシピ生成APIがエラーを返しました');
+            }
+            
+            const recipeApiData = await recipeResponse.json();
+            recipeName = recipeApiData.recipeName;
+            description = recipeApiData.description;
+            steps = recipeApiData.steps; 
+            
+            titleElement.textContent = recipeName;
 
-            const imagePrompt = generateImagePrompt(recipeName, ingredients, cookingStyle);
+        } catch (error) {
+            // ★★★ API失敗時の処理 ★★★
+            // APIが失敗しても、"しょぼい"名前で処理を続行し、表示が止まらないようにする
+            console.error('レシピ生成APIの呼び出しに失敗:', error);
+            titleElement.textContent = "レシピ名の生成に失敗 (ローカルで生成)";
+            
+            recipeName = `${ingredients[0] || '奇跡'}と${ingredients[1] || '謎'}の${cookingStyle}`; // しょぼい名前
+            description = `主な材料は${ingredients.join('、')}。調理法は「${cookingStyle}」。`;
+            steps = recipeData.map(step => { // しょぼい工程
+                const seasoningText = step.seasoning ? `, 味付け: ${step.seasoning}` : '';
+                return `${step.ingredient} → 時間:${step.time}, 切り方:${step.cutting}${seasoningText}`;
+            });
+        }
+
+        // 5. 画像生成APIを呼び出し (ミステリアスなプロンプトを使用)
+        try {
+            imageElement.src = ""; 
+            imageElement.alt = "画像を生成中...";
+            
+            const imagePrompt = generateImagePrompt(recipeName, ingredients, cookingStyle); 
             
             const response = await fetch('/api/generate-image', {
                 method: 'POST',
@@ -38,97 +78,98 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error(`APIサーバーがエラーを返しました: ${response.status}`);
             }
-
             const data = await response.json();
-
-            // サーバーから返ってきた画像(データURI)をセット
             if (data.imageUrl) {
                 imageElement.src = data.imageUrl;
                 imageElement.alt = recipeName;
             }
         } catch (error) {
             console.error('画像生成に失敗しました:', error);
-            imageElement.src = '/img/1402858_s.jpg'; // エラー時はサンプル画像
+            imageElement.src = '/img/1402858_s.jpg';
             imageElement.alt = '画像の読み込みに失敗しました';
         }
 
-        // 3. レシピ詳細の表示
+        // 6. レシピ詳細の表示 (APIまたはフォールバックで生成されたsteps)
         let detailsHtml = '<h4>調理工程</h4><ul>';
-        recipeData.forEach(step => {
-            const seasoningText = step.seasoning ? `, 味付け: ${step.seasoning}` : '';
-            detailsHtml += `<li>${step.ingredient} → 時間:${step.time}, 切り方:${step.cutting}${seasoningText}</li>`;
+        steps.forEach(step => {
+            detailsHtml += `<li>${step}</li>`;
         });
         detailsHtml += '</ul>';
         detailsElement.innerHTML = detailsHtml;
 
-         // ★★★ ここからが保存処理の追加箇所 ★★★
-        saveButton.addEventListener('click', async () => {
-            // 1. 保存用のデータを作成
-            const description = `主な材料は${ingredients.join('、')}。調理法は「${cookingStyle}」。`;
-            const steps = recipeData.map(step => {
-                const seasoningText = step.seasoning ? `(味付け: ${step.seasoning})` : '';
-                return `${step.ingredient}を「${step.time}」で「${step.cutting}」にする${seasoningText}`;
-            });
-            
-            const recipeToSave = {
-                recipeName: recipeName,
-                description: description,
-                steps: steps,
-            };
+        // 7. 星評価のロジックを起動
+        const stars = document.querySelectorAll('#rating-stars .star');
+        let currentRating = 1; // 初期値1
 
-            // 2. /api/save-recipe エンドポイントにデータを送信
+        function setRating(rating) {
+            stars.forEach(star => {
+                star.classList.toggle('selected', parseInt(star.dataset.value) <= rating);
+            });
+        }
+        function setHover(rating) {
+            stars.forEach(star => {
+                star.classList.toggle('hover', parseInt(star.dataset.value) <= rating);
+            });
+        }
+        stars.forEach(star => {
+            star.addEventListener('mouseover', () => setHover(parseInt(star.dataset.value)));
+            star.addEventListener('click', () => {
+                currentRating = parseInt(star.dataset.value);
+                setRating(currentRating);
+            });
+        });
+        document.getElementById('rating-stars').addEventListener('mouseout', () => setHover(currentRating));
+        setRating(currentRating);
+        setHover(currentRating);
+
+        // 8. 保存ボタンのロジックを起動
+        saveButton.addEventListener('click', async () => {
+            const recipeToSave = { recipeName, description, steps };
             try {
                 const saveResponse = await fetch('/api/save-recipe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(recipeToSave),
                 });
-                
                 const result = await saveResponse.json();
                 if (result.success) {
                     alert('レシピがガチャに追加されました！');
-                    saveButton.disabled = true; // 2重保存を防ぐためにボタンを無効化
+                    saveButton.disabled = true;
                     saveButton.textContent = '追加済み';
-                } else {
-                    throw new Error(result.error || '保存に失敗しました。');
-                }
+                } else { throw new Error(result.error || '保存に失敗しました。'); }
             } catch (err) {
                 console.error('保存エラー:', err);
                 alert('エラーによりレシピを保存できませんでした。');
             }
         });
-        // ★★★ 保存処理ここまで ★★★
-        // 4. ボタンのイベントリスナー設定
+        
+        // 9. 共有ボタンのロジックを起動
         shareButton.addEventListener('click', () => {
             const shareText = `奇跡のレシピ「${recipeName}」が完成！\n主な材料: ${ingredients.join(', ')}\n#グルメイカー #AIレシピ`;
             const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
             window.open(shareUrl, '_blank');
         });
 
+        // 10. スタートへ戻るボタンのロジックを起動
         returnButton.addEventListener('click', () => {
-            window.location.href = 'title.html';
+            window.location.href = '/index.html'; // 正しいパス
         });
     }
 
+    // メイン関数を実行
     generateAndDisplayRecipe();
 });
 
-// --- ヘルパあああー関数 (ファイルの下部に配置) ---
-
-function generateRecipeName(ingredients, cookingStyle) {
-    const mainIngredient = ingredients[0] || '奇跡';
-    const subIngredient = ingredients[1] || '謎';
-    return `${mainIngredient}と${subIngredient}の${cookingStyle}`;
-}
-
+// --- ヘルパー関数 (ミステリアスな画像プロンプト) ---
 function generateImagePrompt(recipeName, ingredients, cookingStyle) {
-    // 重要なキーワードを英語で伝え、強調するプロンプト
-    // (word:1.2) のように書くと、その単語の重要度を1.2倍にできます
+    const mainPrompt = recipeName; 
     return `
-        (best quality, masterpiece, photorealistic:1.2),
-        photo of a gourmet dish of "${ingredients.join(' and ')}".
-        Cooked by "${cookingStyle}".
-        On a clean white plate, warm lighting, looks very delicious, steam rising.
-        Simple restaurant table background, (depth of field:1.1).
+        (best quality, masterpiece),
+        A mysterious and surreal dish called "${mainPrompt}".
+        Made from strange ingredients like "${ingredients.join(' and ')}".
+        (bioluminescent:1.3), glowing with a (neon:1.2) light,
+        looks like something from a deep-sea trench or a distant nebula.
+        (otherworldly:1.2), magical, enigmatic, 
+        intricate details, dark background.
     `;
 }

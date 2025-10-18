@@ -115,3 +115,29 @@ body {
     color: #d8b4fe;
     text-shadow: 0 0 5px rgba(216, 180, 254, 0.7);
 }
+.rating-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #00ffff;
+}
+.stars {
+    display: flex;
+    direction: ltr; /* 左から右へ */
+}
+.star {
+    font-size: 1.8em;
+    color: #555; 
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.star:hover,
+.star.hover {
+    color: #f39c12; /* ホバー時の色 */
+}
+.star.selected {
+    color: #f1c40f; /* 選択時の色 */
+}

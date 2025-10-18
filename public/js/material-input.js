@@ -1,66 +1,26 @@
-// front/js/material-input.js
+// front/js/material-input.js (自由入力版)
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 選択可能な材料リスト
-    const AVAILABLE_INGREDIENTS = [
-        'たまねぎ', 'にんじん', 'じゃがいも', '豚肉', '鶏肉', '牛肉',
-        'きのこ', '卵', 'チーズ', 'ツナ缶', '鯖缶', '冷凍たこ焼き', 'かぼちゃ',
-        'マシュマロ', 'クロワッサン', 'うなぎ', '焼き芋', 'ポテチ'
-    ];
+    // 選択可能な材料リスト (AVAILABLE_INGREDIENTS) は不要なので削除
 
     const addBtn = document.getElementById('add-ingredient');
     const ingredientList = document.getElementById('ingredient-list');
     const removeBtn = document.getElementById('remove-ingredient');
     const submitBtn = document.querySelector('.submit-btn');
 
-    // すべてのドロップダウンをチェックし、選択済みの材料を他のリストで無効化する関数
-    function updateAllDropdowns() {
-        const allSelects = ingredientList.querySelectorAll('.ingredient-select');
-        const selectedValues = [];
+    // ドロップダウンを同期する 'updateAllDropdowns' 関数は不要なので削除
 
-        // 現在選択されている値のリストを作成
-        allSelects.forEach(select => {
-            if (select.value) {
-                selectedValues.push(select.value);
-            }
-        });
-
-        // 各ドロップダウンの選択肢を更新
-        allSelects.forEach(select => {
-            const currentSelectedValue = select.value;
-            select.querySelectorAll('option').forEach(option => {
-                const isSelectedElsewhere = selectedValues.includes(option.value);
-                // 他で選択されていて、かつ自分自身の選択値ではない場合に無効化
-                if (isSelectedElsewhere && option.value !== currentSelectedValue) {
-                    option.disabled = true;
-                } else {
-                    option.disabled = false;
-                }
-            });
-        });
-    }
-
-    // 材料選択の行（ドロップダウン + 数量入力）を作成する関数
+    // 材料選択の行（テキスト入力 + 数量入力）を作成する関数
     function createIngredientRow() {
         const row = document.createElement('div');
         row.className = 'ingredient-row'; // CSSでスタイリングするためのクラス
 
-        // 材料選択ドロップダウン
-        const select = document.createElement('select');
-        select.className = 'ingredient-select';
-        select.addEventListener('change', updateAllDropdowns);
-
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = '材料を選択...';
-        defaultOption.value = '';
-        select.appendChild(defaultOption);
-
-        AVAILABLE_INGREDIENTS.forEach(ingredient => {
-            const option = document.createElement('option');
-            option.value = ingredient;
-            option.textContent = ingredient;
-            select.appendChild(option);
-        });
+        // ★★★ 変更点: ドロップダウン(select)からテキスト入力(input)に変更 ★★★
+        const textInput = document.createElement('input');
+        textInput.type = 'text';
+        textInput.className = 'ingredient-input'; // CSS用の新しいクラス名
+        textInput.placeholder = '材料名を入力...';
+        // ★★★ 変更ここまで ★★★
 
         // 数量入力フィールド
         const quantityInput = document.createElement('input');
@@ -68,8 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         quantityInput.className = 'quantity-input';
         quantityInput.placeholder = '量(g)';
         quantityInput.min = '1';
-
-        row.appendChild(select);
+        
+        // ★★★ 変更点: select の代わりに textInput を追加 ★★★
+        row.appendChild(textInput);
         row.appendChild(quantityInput);
         
         return row;
@@ -83,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         ingredientList.appendChild(createIngredientRow());
-        updateAllDropdowns();
+        // updateAllDropdowns() の呼び出しは削除
     });
 
     // 「- 材料を削除」ボタンの処理
@@ -92,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 最初の1行は削除させない
         if (allRows.length > 1) {
             allRows[allRows.length - 1].remove();
-            updateAllDropdowns();
+            // updateAllDropdowns() の呼び出しは削除
         }
     });
 
@@ -103,15 +64,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let allValid = true;
 
         allRows.forEach(row => {
-            const select = row.querySelector('.ingredient-select');
+            // ★★★ 変更点: '.ingredient-select' から '.ingredient-input' に変更 ★★★
+            const textInput = row.querySelector('.ingredient-input');
             const quantityInput = row.querySelector('.quantity-input');
 
-            // 材料が選択され、かつ数量が入力されているかチェック
-            if (!select.value || !quantityInput.value) {
+            // 材料が入力され、かつ数量が入力されているかチェック
+            if (!textInput.value || !quantityInput.value) {
                 allValid = false;
             } else {
                 ingredientsData.push({
-                    name: select.value,
+                    name: textInput.value, // テキスト入力の値を取得
                     quantity: quantityInput.value
                 });
             }
@@ -122,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // URLパラメータを作成して次の画面へ
+        // URLパラメータを作成して次の画面へ（この部分は変更なし）
         const params = new URLSearchParams({
-            ingredients: JSON.stringify(ingredientsData) // JSON文字列としてデータを渡す
+            ingredients: JSON.stringify(ingredientsData)
         });
         window.location.href = `/surotto.html?${params.toString()}`;
     });

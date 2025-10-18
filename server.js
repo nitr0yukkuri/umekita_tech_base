@@ -1,116 +1,148 @@
 // 必要なライブラリを読み込む
 const express = require('express');
-const { HfInference } = require("@huggingface/inference");
-require('dotenv').config();
-const sqlite3 = require('sqlite3').verbose();
+const https = require('https'); // Node.js 標準のhttpsモジュール
 const path = require('path');
-
-// Hugging Faceのクライアントを初期化
-const hf = new HfInference(process.env.HF_TOKEN);
+const FormData = require('form-data'); // Clipdropの時にインストールしたライブラリ
+const sqlite3 = require('sqlite3').verbose();
+require('dotenv').config();
 
 // Expressアプリを初期化
 const app = express();
 const PORT = 3000;
-const HOST = '0.0.0.0'; // すべてのネットワークからの接続を許可
+const HOST = '0.0.0.0';
 
 app.use(express.json());
-// 'public'フォルダの中身を、Webサイトのルートとして公開
 app.use(express.static('public'));
 
 // データベースに接続
 const db = new sqlite3.Database(path.join(__dirname, 'yaminabe.db'), (err) => {
-    if (err) {
-        return console.error('データベース接続エラー:', err.message);
-    }
+    if (err) return console.error('データベース接続エラー:', err.message);
     console.log('データベース (yaminabe.db) に正常に接続しました。');
 });
 
+// --- ヘルパー関数 (レシピ名生成) ---
+function getRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+function generateCoolRecipeName(ingredients, cookingStyle) {
+    const mainIngredient = ingredients[0] || '奇跡の食材';
+    const subIngredient = ingredients[1] || '謎の具材';
+    const prefixes = ['奇跡の', '禁断の', '深淵の', '時空を超える', '伝説の', 'ネオ・', 'サイバー', '漆黒の', '閃光の', '混沌の', '終焉の', '絶対零度の'];
+    const suffixes = ['〜暗黒仕立て〜', '〜光と闇の融合〜', '〜深淵より愛を込めて〜', '・インフェルノ', '・アビス', '・カタストロフィ', '・ジェネシス', '・黙示録'];
+    let styleName = cookingStyle;
+    if (cookingStyle === '焼く') styleName = 'アビス・ロースト';
+    else if (cookingStyle === '煮る') styleName = 'カオティック・シチュー';
+    else if (cookingStyle === '鍋') styleName = 'ネオ・闇鍋';
+    const prefix = Math.random() < 0.5 ? getRandomElement(prefixes) : '';
+    const suffix = Math.random() < 0.5 ? getRandomElement(suffixes) : '';
+    return `${prefix}${mainIngredient}と${subIngredient}の${styleName}${suffix}`;
+}
+// --- ヘルパー関数ここまで ---
+
+
 // --- APIエンドポイント ---
 
-// 1. 画像生成API (/api/generate-image)
-// Hugging FaceのAIを使って、プロンプトから画像を生成します。
+// 1. 画像生成API (Stability AI・SDK不要版)
 app.post('/api/generate-image', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) {
         return res.status(400).json({ error: 'プロンプトが必要です。' });
     }
-    console.log('Hugging Faceへのプロンプト:', prompt);
+    console.log('Stability AIへのプロンプト:', prompt);
+
+    const apiKey = process.env.STABILITY_API_KEY;
+    if (!apiKey) {
+        console.error('Stability AI APIキーが.envファイルに設定されていません。');
+        return res.status(500).json({ imageUrl: '/img/1402858_s.jpg' });
+    }
 
     try {
-        console.log('Hugging Face APIに画像生成をリクエストします...');
-        const imageBlob = await hf.textToImage({
-            model: 'stabilityai/stable-diffusion-xl-base-1.0',
-            inputs: prompt,
+        console.log('Stability AI APIに画像生成をリクエストします...');
+        
+        const form = new FormData();
+        form.append('prompt', prompt);
+        form.append('output_format', 'png');
+        // 使用するモデルを指定
+        const model = 'stable-diffusion-3-medium'; 
+
+        const request = https.request({
+            hostname: 'api.stability.ai',
+            path: `/v2beta/stable-image/generate/core`,
+            method: 'POST',
+            headers: {
+                ...form.getHeaders(),
+                'Authorization': `Bearer ${apiKey}`, // APIキーをBearerトークンとして送信
+                'Accept': 'image/*' // 画像データを受け取る
+            }
         });
-        console.log('画像の生成に成功しました。');
 
-        // 画像データをWebで表示できる形式（Base64）に変換
-        const buffer = await imageBlob.arrayBuffer();
-        const base64Image = Buffer.from(buffer).toString('base64');
-        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        form.pipe(request); // データを送信
 
-        res.json({ imageUrl: imageUrl });
+        let responseData = [];
+        request.on('response', (response) => {
+            if (response.statusCode === 200) {
+                response.on('data', (chunk) => responseData.push(chunk));
+                response.on('end', () => {
+                    console.log('画像の生成に成功しました。');
+                    const buffer = Buffer.concat(responseData);
+                    const imageUrl = `data:image/png;base64,${buffer.toString('base64')}`;
+                    res.json({ imageUrl });
+                });
+            } else {
+                 console.error('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                 console.error(`Stability AI APIエラー: Status Code ${response.statusCode}`);
+                 response.on('data', (chunk) => console.error('エラー詳細:', chunk.toString()));
+                 console.error('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                 res.status(500).json({ imageUrl: '/img/1402858_s.jpg' });
+            }
+        });
+
+        request.on('error', (error) => {
+            console.error('Stability AI APIでリクエストエラーが発生しました:', error);
+            res.status(500).json({ imageUrl: '/img/1402858_s.jpg' });
+        });
 
     } catch (error) {
-        console.error('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.error('Hugging Face APIでエラーが発生しました:');
-        console.error(error); // エラーの詳細を出力
-        console.error('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        
-        // エラーが発生した場合は、代わりにサンプル画像を返す
+        console.error('サーバー内部でエラーが発生しました:', error);
         res.status(500).json({ imageUrl: '/img/1402858_s.jpg' });
     }
 });
 
-// 2. ガチャAPI (/api/gacha)
-// データベースからランダムにレシピを1つ取得します。
+// 2. ガチャAPI (変更なし)
 app.get('/api/gacha', (req, res) => {
     const sql = `SELECT * FROM recipes ORDER BY RANDOM() LIMIT 1;`;
     db.get(sql, [], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
+        if (err) { res.status(500).json({ error: err.message }); return; }
         res.json(row);
     });
 });
 
-// 3. レシピ生成API (/api/generate-recipe)
-// スロット画面で決まった材料などから、レシピ名や説明文を生成します。
+// 3. レシピ生成API (変更なし)
 app.post('/api/generate-recipe', (req, res) => {
     try {
-        const { ingredients, cookingStyle, time, method, seasoning } = req.body;
-        if (!ingredients || ingredients.length === 0) {
-            return res.status(400).json({ error: '材料が指定されていません' });
+        const { ingredients, cookingStyle, recipeData } = req.body;
+        if (!ingredients || !cookingStyle || !recipeData) {
+            return res.status(400).json({ error: '必要なデータが不足しています' });
         }
-        const recipe = {
-            recipeName: `「${ingredients.join('と')}」の${cookingStyle}風 ${seasoning}仕立て`,
-            description: `約${time}で完成！${method}の食感が楽しい、珠玉の一品。`,
-            steps: [
-                `材料（${ingredients.join('、')}など）をすべて${method}にする。`,
-                `フライパンや鍋を使い、調理法「${cookingStyle}」で${time}じっくり火を通す。`,
-                `最後に${seasoning}を加えて味を整え、お皿に盛り付けたら完成！`
-            ]
-        };
-        res.json(recipe);
+        const recipeName = generateCoolRecipeName(ingredients, cookingStyle);
+        const description = `主な材料は${ingredients.join('、')}。調理法は「${cookingStyle}」。`;
+        const steps = recipeData.map(step => {
+            const seasoningText = step.seasoning ? `(味付け: ${step.seasoning})` : '';
+            return `${step.ingredient}を「${step.time}」で「${step.cutting}」にする${seasoningText}`;
+        });
+        res.json({ recipeName, description, steps });
     } catch (error) {
         res.status(500).json({ error: 'レシピの生成に失敗しました。' });
     }
 });
 
-// 4. 【追加】レシピ保存API (/api/save-recipe)
-// 完成したレシピをデータベースに保存します。
+// 4. レシピ保存API (変更なし)
 app.post('/api/save-recipe', (req, res) => {
     const { recipeName, description, steps } = req.body;
-
-    // バリデーション
     if (!recipeName || !description || !steps) {
         return res.status(400).json({ success: false, error: '必要なデータが不足しています。' });
     }
-
-    // stepsが配列の場合は、文字列に変換してDBに保存
     const stepsString = Array.isArray(steps) ? steps.join('\n') : steps;
-
     const sql = `INSERT INTO recipes (recipeName, description, steps) VALUES (?, ?, ?)`;
     db.run(sql, [recipeName, description, stepsString], function(err) {
         if (err) {
@@ -121,7 +153,6 @@ app.post('/api/save-recipe', (req, res) => {
         res.json({ success: true, id: this.lastID });
     });
 });
-
 
 // サーバーを起動
 app.listen(PORT, HOST, () => {

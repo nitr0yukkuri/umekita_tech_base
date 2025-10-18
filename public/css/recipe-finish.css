@@ -1,5 +1,7 @@
 /* front/css/recipe-finish.css */
 
+/* ★★★ 以下の body スタイルブロックを丸ごと削除 ★★★ */
+/*
 body {
     background-color: #0d1a2f;
     background-image: url('../../img/haikei.png');
@@ -7,24 +9,38 @@ body {
     background-position: center;
     background-attachment: fixed;
     margin: 0;
-    padding: 40px 20px; /* 上下の余白を増やす */
+    padding: 40px 20px;
     color: #fff;
     text-align: center;
 }
+*/
+
+/* ★★★ 以下の .screen スタイルブロックを丸ごと削除 ★★★ */
+/*
 .screen {
     width: 100%;
     max-width: 550px;
-    margin: 0 auto; /* 中央揃え */
+    margin: 0 auto;
 }
+*/
+
+/* ★★★ 以下の .container スタイルを追加 ★★★ */
+/* common.css の .container を上書きして、ボタンを下に配置し、スクロール可能にする */
+.container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* 内容が溢れたらスクロール */
+}
+
+
 .finish-title {
     color: #00ffff;
     text-shadow: 0 0 8px #00ffff;
     margin-bottom: 25px;
     font-size: 2.2em;
-    word-break: break-all; /* 長い名前でも折り返す */
+    word-break: break-all;
 }
-/* (以下、前回の回答と同じ内容) */
-/* 料理画像 */
+/* (中略: .recipe-image, .recipe-details-box などのスタイルは変更なし) */
 .recipe-image {
     width: 80%;
     max-width: 400px;
@@ -34,8 +50,6 @@ body {
     margin-bottom: 25px;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
 }
-
-/* 調理工程のボックス */
 .recipe-details-box {
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid #ff00ff;
@@ -44,19 +58,16 @@ body {
     margin-bottom: 30px;
     text-align: left;
 }
-
 .recipe-details-box h4 {
     margin: 0 0 10px 0;
     color: #ff00ff;
     text-align: center;
 }
-
 .recipe-details-box ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-
 .recipe-details-box li {
     padding: 5px 0;
     border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
@@ -65,7 +76,9 @@ body {
     border-bottom: none;
 }
 
-/* ボタン類 */
+
+/* ★★★ 以下の .button-container スタイルブロック（既存）を丸ごと削除 ★★★ */
+/*
 .button-container {
     display: flex;
     flex-direction: column;
@@ -73,10 +86,27 @@ body {
     gap: 15px;
     width: 100%;
 }
+*/
 
+/* ★★★ 以下の .button-container スタイルブロック（新規）を追加 ★★★ */
+/* amazing-cooking-screnn.css と同じレイアウトを適用 */
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* ボタン間の隙間を少し狭く調整 */
+    margin-top: auto;   /* これがボタンを一番下に配置する重要な指定 */
+    padding-bottom: 30px; /* 下部の余白 */
+    padding-top: 20px;  /* 上部の余白 */
+}
+
+
+/* ボタン類 (既存のスタイルを活用) */
 .rating-button,
 .share-button,
-.return-button {
+.return-button,
+.save-button { /* .save-button も対象に追加 */
     width: 80%;
     padding: 15px;
     font-size: 1.1em;
@@ -84,55 +114,74 @@ body {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
+    /* ★★★ 以下の margin-bottom を削除 (gapで管理するため) ★★★ */
+    /* margin-bottom: 15px; */
 }
 
+/* （...既存の各種ボタンスタイルは変更なし...） */
 .rating-button, .share-button {
     background-color: #00ffff;
     color: #0d1a2f;
     border: none;
     box-shadow: 0 0 15px #00ffff;
 }
-
 .return-button {
     background: transparent;
     color: #ff00ff;
     border: 2px solid #ff00ff;
 }
-
 .rating-button:hover, .share-button:hover {
     transform: scale(1.05);
 }
-
 .return-button:hover {
     background: #ff00ff;
     color: #0d1a2f;
     box-shadow: 0 0 15px #ff00ff;
 }
-/* front/css/recipe-finish.css の末尾に追加 */
-
 .save-button {
-    width: 80%;
-    padding: 15px;
-    font-size: 1.1em;
-    font-weight: bold;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: #f0ad4e; /* 例：オレンジ色 */
+    background-color: #f0ad4e;
     color: #fff;
     border: none;
     box-shadow: 0 4px 10px rgba(240, 173, 78, 0.4);
-    margin-bottom: 15px;
 }
-
 .save-button:hover {
     transform: scale(1.05);
 }
-
 .save-button:disabled {
     background-color: #555;
     color: #aaa;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+/* （...既存のスタイル...） */
+
+/* ★★★ 以下をCSSファイルの末尾に追加 ★★★ */
+
+/* --- 星評価のスタイル --- */
+.rating-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #00ffff;
+}
+.stars {
+    display: flex;
+    direction: ltr; /* 左から右へ */
+}
+.star {
+    font-size: 1.8em;
+    color: #555; 
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.star:hover,
+.star.hover {
+    color: #f39c12; /* ホバー時の色 (オレンジ系) */
+}
+.star.selected {
+    color: #f1c40f; /* 選択時の色 (イエロー系) */
 }
