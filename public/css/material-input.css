@@ -187,3 +187,25 @@ h2 {
     color: #0d1a2f;
     box-shadow: 0 0 15px #d8b4fe;
 }
+/* ★★★ 以下をCSSファイルの末尾に追加 ★★★ */
+
+/* 新しい「材料名」テキスト入力欄のスタイル */
+.ingredient-input {
+    flex-grow: 1;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    background: transparent;
+    border: 2px solid #d0f0c0;
+    color: #d0f0c0;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 2px #d0f0c0;
+    box-sizing: border-box; /* 幅の計算を統一 */
+}
+
+/* テキスト入力欄のプレースホルダー（ヒント文字）の色 */
+.ingredient-input::placeholder {
+    color: #d0f0c0;
+    opacity: 0.6; /* 少し薄くする */
+}

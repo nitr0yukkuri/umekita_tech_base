@@ -4,12 +4,12 @@ const gachaButton = document.getElementById('btn-2');
 
 // 「レシピを作る」ボタンがクリックされた時の処理
 createRecipeButton.addEventListener('click', () => {
-    window.location.href = 'material-input.html';
-    // ここにレシピ作成の処理を記述します
+    // ★★★ 修正: 先頭に '/' を追加 ★★★
+    window.location.href = '/material-input.html';
 });
 
 // 「闇ガチャを回す」ボタンがクリックされた時の処理
 gachaButton.addEventListener('click', () => {
-    window.location.href = 'gacha.html';
-    // ここにガチャの処理を記述します
+    // ★★★ 修正: 先頭に '/' を追加 ★★★
+    window.location.href = '/gacha.html';
 });

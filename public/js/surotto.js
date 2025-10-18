@@ -125,17 +125,16 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         animationFrameIds = [null, null, null];
 
+      // 86行目あたりから始まる `if (currentIngredientIndex >= ingredients.length)` のブロックを以下のように変更
+
         if (currentIngredientIndex >= ingredients.length) {
-            const lastResult = allResults.length > 0 ? allResults[allResults.length - 1] : null;
-            if (lastResult) {
-                const params = new URLSearchParams();
-                params.append('time', lastResult.time);
-                params.append('method', lastResult.cutting);
-                params.append('seasoning', lastResult.seasoning || 'なし');
-                window.location.href = `recipe-finish.html?${params.toString()}`;
-            } else {
-                window.location.href = 'recipe-finish.html';
-            }
+            // ★★★ 修正箇所 スタート ★★★
+            // 結果をsessionStorageに保存して、次の画面に渡す
+            sessionStorage.setItem('finalRecipe', JSON.stringify(allResults));
+            sessionStorage.setItem('cookingStyle', JSON.stringify(chosenCookingStyle));
+            
+           window.location.href = '/recipe-finish.html'; // 先頭に '/' を追加
+        // ★★★★★★★★★★★★★★★★
             return;
         }
         
@@ -277,11 +276,13 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    saveAndFinishButton.addEventListener('click', async () => {
+saveAndFinishButton.addEventListener('click', async () => {
         playSound(clickSound);
         alert('レシピが保存されました！(シミュレーション)');
-        window.location.href = 'index.html';
-    });
+        // ★★★ 修正箇所 No.2 ★★★
+        window.location.href = '/index.html'; // 先頭に '/' を追加し、'index.html' に変更
+        // ★★★★★★★★★★★★★★★★
+        });
 
-    initializeApp();
+     initializeApp();
 });
