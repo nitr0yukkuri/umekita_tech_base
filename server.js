@@ -137,20 +137,85 @@ app.post('/api/generate-recipe', (req, res) => {
 });
 
 // 4. レシピ保存API (変更なし)
+// app.post('/api/save-recipe', (req, res) => {
+//     const { recipeName, description, steps } = req.body;
+//     if (!recipeName || !description || !steps) {
+//         return res.status(400).json({ success: false, error: '必要なデータが不足しています。' });
+//     }
+//     const stepsString = Array.isArray(steps) ? steps.join('\n') : steps;
+//     const sql = `INSERT INTO recipes (recipeName, description, steps) VALUES (?, ?, ?)`;
+//     db.run(sql, [recipeName, description, stepsString], function(err) {
+//         if (err) {
+//             console.error('DB保存エラー:', err.message);
+//             return res.status(500).json({ success: false, error: 'データベースへの保存に失敗しました。' });
+//         }
+//         console.log(`新しいレシピがID ${this.lastID} で保存されました。`);
+//         res.json({ success: true, id: this.lastID });
+//     });
+// });
+// 4. レシピ保存API (変更あり)
 app.post('/api/save-recipe', (req, res) => {
-    const { recipeName, description, steps } = req.body;
+    // ★★★ req.body から rating を受け取る ★★★
+    const { recipeName, description, steps, rating } = req.body; 
+
+    // ★★★ rating が無ければ 1 をデフォルトにする ★★★
+    const initialRating = rating || 1;
+
     if (!recipeName || !description || !steps) {
         return res.status(400).json({ success: false, error: '必要なデータが不足しています。' });
     }
     const stepsString = Array.isArray(steps) ? steps.join('\n') : steps;
-    const sql = `INSERT INTO recipes (recipeName, description, steps) VALUES (?, ?, ?)`;
-    db.run(sql, [recipeName, description, stepsString], function(err) {
+    
+    // ★★★ SQL文に rating と rated_count を追加 ★★★
+    const sql = `INSERT INTO recipes (recipeName, description, steps, rating, rated_count) VALUES (?, ?, ?, ?, ?)`;
+    
+    // ★★★ パラメータに initialRating と 1 (評価回数) を追加 ★★★
+    db.run(sql, [recipeName, description, stepsString, initialRating, 1], function(err) { 
         if (err) {
             console.error('DB保存エラー:', err.message);
             return res.status(500).json({ success: false, error: 'データベースへの保存に失敗しました。' });
         }
         console.log(`新しいレシピがID ${this.lastID} で保存されました。`);
         res.json({ success: true, id: this.lastID });
+    });
+});
+
+// 5. ★★★ 評価「更新」API (新規追加) ★★★
+app.post('/api/rate-recipe/:id', (req, res) => {
+    const recipeId = req.params.id;
+    const { newRating } = req.body; // 新しい評価 (1〜5)
+
+    if (!newRating || newRating < 1 || newRating > 5) {
+        return res.status(400).json({ success: false, error: '無効な評価です。' });
+    }
+
+    // トランザクション（複数のDB操作）を開始
+    db.serialize(() => {
+        // 1. 現在の評価と評価数を取得
+        const getSql = `SELECT rating, rated_count FROM recipes WHERE id = ?`;
+        db.get(getSql, [recipeId], (err, row) => {
+            if (err) {
+                return res.status(500).json({ success: false, error: err.message });
+            }
+            if (!row) {
+                return res.status(404).json({ success: false, error: 'レシピが見つかりません。' });
+            }
+
+            // 2. 新しい平均評価を計算
+            const currentTotalRating = row.rating * row.rated_count;
+            const newRatedCount = row.rated_count + 1;
+            const newAverageRating = (currentTotalRating + newRating) / newRatedCount;
+
+            // 3. データベースを更新
+            const updateSql = `UPDATE recipes SET rating = ?, rated_count = ? WHERE id = ?`;
+            db.run(updateSql, [newAverageRating, newRatedCount, recipeId], function(err) {
+                if (err) {
+                    return res.status(500).json({ success: false, error: err.message });
+                }
+                console.log(`レシピID ${recipeId} の評価が更新されました。`);
+                res.json({ success: true, newAverage: newAverageRating });
+            });
+        });
     });
 });
 
