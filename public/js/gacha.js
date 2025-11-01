@@ -21,6 +21,7 @@ drawButton.addEventListener('click', async () => {
         if (recipe) {
             // 日本語のパラメータをエンコードしてURLを作成
             const params = new URLSearchParams({
+                id: recipe.id,
                 recipeName: recipe.recipeName,
                 description: recipe.description,
                 steps: recipe.steps,
