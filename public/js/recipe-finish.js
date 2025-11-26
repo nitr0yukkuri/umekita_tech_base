@@ -66,8 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             imageElement.src = ""; 
             imageElement.alt = "画像を生成中...";
-            
+            titleElement.textContent = "奇跡の料理を調理中...";
+            // 5. AI画像生成のAPIを呼び出す
+            imageElement.src = "/img/loading.gif"; // もしローディング用GIF画像があれば
+            imageElement.alt = "AIが調理中...";
             const imagePrompt = generateImagePrompt(recipeName, ingredients, cookingStyle); 
+            
+    
+    
+        
             
             const response = await fetch('/api/generate-image', {
                 method: 'POST',

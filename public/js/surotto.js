@@ -277,12 +277,22 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 saveAndFinishButton.addEventListener('click', async () => {
-        playSound(clickSound);
-        alert('レシピが保存されました！(シミュレーション)');
-        // ★★★ 修正箇所 No.2 ★★★
-        window.location.href = '/index.html'; // 先頭に '/' を追加し、'index.html' に変更
-        // ★★★★★★★★★★★★★★★★
-        });
+    playSound(clickSound);
 
-     initializeApp();
+    // finalRecipeData と chosenCookingStyle は、surotto.js の
+    // onMainGameEnd 関数などで定義されている変数です
+    if (!finalRecipeData || !chosenCookingStyle) {
+        alert('エラー: レシピデータが見つかりません。');
+        return;
+    }
+
+    // 1. データをsessionStorageに保存
+    sessionStorage.setItem('finalRecipe', JSON.stringify(finalRecipeData));
+    sessionStorage.setItem('cookingStyle', JSON.stringify(chosenCookingStyle));
+
+    // 2. レシピ完成画面に遷移
+    window.location.href = '/recipe-finish.html';
+    
+});
+    initializeApp();
 });
