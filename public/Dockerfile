@@ -1,5 +1,5 @@
 # Node.jsの公式イメージを使う
-FROM node:20
+FROM node:24.22.1-bookworm-slim
 
 # コンテナ内での作業ディレクトリを作成
 WORKDIR /app
